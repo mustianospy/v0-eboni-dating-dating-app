@@ -1,4 +1,3 @@
-
 export interface ValidationRule {
   required?: boolean
   minLength?: number
@@ -95,4 +94,84 @@ export const CommonRules = {
       return null
     }
   }
+}
+
+export const validatePhotoUpload = (file: File): string | null => {
+  const maxSize = 5 * 1024 * 1024 // 5MB
+  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+
+  if (!allowedTypes.includes(file.type)) {
+    return 'Please upload a valid image file (JPEG, PNG, or WebP)'
+  }
+
+  if (file.size > maxSize) {
+    return 'Image size must be less than 5MB'
+  }
+
+  return null
+}
+
+export const validateCardNumber = (cardNumber: string): string | null => {
+  const cleaned = cardNumber.replace(/\s/g, '')
+
+  if (!/^\d{13,19}$/.test(cleaned)) {
+    return 'Card number must be 13-19 digits'
+  }
+
+  // Luhn algorithm check
+  let sum = 0
+  let isEven = false
+
+  for (let i = cleaned.length - 1; i >= 0; i--) {
+    let digit = parseInt(cleaned[i])
+
+    if (isEven) {
+      digit *= 2
+      if (digit > 9) {
+        digit -= 9
+      }
+    }
+
+    sum += digit
+    isEven = !isEven
+  }
+
+  if (sum % 10 !== 0) {
+    return 'Invalid card number'
+  }
+
+  return null
+}
+
+export const validateExpiryDate = (expiryDate: string): string | null => {
+  const [month, year] = expiryDate.split('/')
+
+  if (!month || !year || month.length !== 2 || year.length !== 2) {
+    return 'Expiry date must be in MM/YY format'
+  }
+
+  const monthNum = parseInt(month)
+  const yearNum = parseInt(year) + 2000
+
+  if (monthNum < 1 || monthNum > 12) {
+    return 'Invalid month'
+  }
+
+  const now = new Date()
+  const currentYear = now.getFullYear()
+  const currentMonth = now.getMonth() + 1
+
+  if (yearNum < currentYear || (yearNum === currentYear && monthNum < currentMonth)) {
+    return 'Card has expired'
+  }
+
+  return null
+}
+
+export const validateCVV = (cvv: string): string | null => {
+  if (!/^\d{3,4}$/.test(cvv)) {
+    return 'CVV must be 3-4 digits'
+  }
+
+  return null
 }

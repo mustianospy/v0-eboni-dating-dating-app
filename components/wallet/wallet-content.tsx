@@ -5,10 +5,11 @@ import { useSession } from "next-auth/react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Wallet, Crown, Star } from "lucide-react"
+import { Wallet, Plus, Crown, History, Coins, TrendingUp, CreditCard } from "lucide-react"
 import { WalletTopUp } from "./wallet-top-up"
 import { TransactionHistory } from "./transaction-history"
 import { TierUpgrade } from "./tier-upgrade"
+import { PaymentCards } from "./payment-cards"
 
 interface UserData {
   walletBalance: number
@@ -105,22 +106,39 @@ export function WalletContent() {
       </Card>
 
       <Tabs defaultValue="top-up" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="top-up">Top Up</TabsTrigger>
-          <TabsTrigger value="history">History</TabsTrigger>
-          <TabsTrigger value="upgrade">Upgrade Tier</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="top-up" className="flex items-center gap-2">
+            <Plus className="h-4 w-4" />
+            Top Up
+          </TabsTrigger>
+          <TabsTrigger value="upgrade" className="flex items-center gap-2">
+            <Crown className="h-4 w-4" />
+            Upgrade
+          </TabsTrigger>
+          <TabsTrigger value="cards" className="flex items-center gap-2">
+            <CreditCard className="h-4 w-4" />
+            Cards
+          </TabsTrigger>
+          <TabsTrigger value="history" className="flex items-center gap-2">
+            <History className="h-4 w-4" />
+            History
+          </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="top-up">
+        <TabsContent value="top-up" className="space-y-6">
           <WalletTopUp onSuccess={fetchUserData} />
         </TabsContent>
 
-        <TabsContent value="history">
-          <TransactionHistory />
+        <TabsContent value="upgrade" className="space-y-6">
+          <TierUpgrade currentTier={userData.subscriptionTier} onSuccess={fetchUserData} />
         </TabsContent>
 
-        <TabsContent value="upgrade">
-          <TierUpgrade currentTier={userData.subscriptionTier} onSuccess={fetchUserData} />
+        <TabsContent value="cards" className="space-y-6">
+          <PaymentCards userId={session?.user?.id} />
+        </TabsContent>
+
+        <TabsContent value="history" className="space-y-6">
+          <TransactionHistory />
         </TabsContent>
       </Tabs>
     </div>
