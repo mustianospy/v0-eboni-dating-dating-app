@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Montserrat } from "next/font/google"
 import { Open_Sans } from "next/font/google"
+import { SkipLink } from "@/components/ui/skip-link"
 import "./globals.css"
 
 const montserrat = Montserrat({
@@ -23,6 +24,18 @@ export const metadata: Metadata = {
   description:
     "Connect with your community. Find love, friendship, and meaningful connections in a safe, inclusive space.",
   generator: "v0.app",
+  manifest: "/manifest.json",
+  themeColor: "#8b5cf6",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=5",
+  robots: "index, follow",
+  keywords: "LGBTQ+, dating, community, relationships, love, inclusive",
+  authors: [{ name: "EboniDating Team" }],
+  openGraph: {
+    title: "EboniDating - LGBTQ+ Dating Community",
+    description: "Connect with your community. Find love, friendship, and meaningful connections.",
+    type: "website",
+    locale: "en_US",
+  },
 }
 
 export default function RootLayout({
@@ -32,7 +45,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${montserrat.variable} ${openSans.variable}`}>
-      <body className="font-sans antialiased">{children}</body>
+      <body className="font-sans antialiased">
+        <SkipLink />
+        {children}
+      </body>
     </html>
   )
 }

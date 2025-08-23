@@ -46,6 +46,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
+        role={!asChild ? "button" : undefined}
+        tabIndex={props.disabled ? -1 : 0}
+        aria-disabled={props.disabled}
         {...props}
       />
     )
