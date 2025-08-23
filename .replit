@@ -5,8 +5,7 @@ run = "npm run dev"
 channel = "stable-25_05"
 
 [deployment]
-run = ["sh", "-c", "npm start"]
-build = ["sh", "-c", "npm run build"]
+run = ["sh", "-c", "npm run dev"]
 
 [workflows]
 runButton = "Development"
@@ -31,3 +30,7 @@ externalPort = 3000
 [[ports]]
 localPort = 3001
 externalPort = 80
+
+[[ports]]
+localPort = 3002
+externalPort = 3002
