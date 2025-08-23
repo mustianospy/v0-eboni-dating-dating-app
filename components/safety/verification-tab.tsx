@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from "react"
@@ -81,7 +82,7 @@ export function VerificationTab() {
 
             <Button onClick={handleStartVerification} className="w-full">
               <Camera className="h-4 w-4 mr-2" />
-              Start Verification
+              Start Photo Verification
             </Button>
           </>
         )}
