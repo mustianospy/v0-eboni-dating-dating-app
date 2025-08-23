@@ -25,10 +25,14 @@ export function SafetyContent() {
       </div>
 
       <Tabs defaultValue="settings" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="settings" className="flex items-center gap-2">
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="verification" className="flex items-center gap-2">
+            <Camera className="h-4 w-4" />
+            Photo Verification
+          </TabsTrigger>
+          <TabsTrigger value="bvn" className="flex items-center gap-2">
             <Shield className="h-4 w-4" />
-            Settings
+            BVN Verification
           </TabsTrigger>
           <TabsTrigger value="blocked" className="flex items-center gap-2">
             <UserX className="h-4 w-4" />
@@ -38,9 +42,9 @@ export function SafetyContent() {
             <Flag className="h-4 w-4" />
             Reports
           </TabsTrigger>
-          <TabsTrigger value="verification" className="flex items-center gap-2">
-            <Camera className="h-4 w-4" />
-            Verification
+          <TabsTrigger value="privacy" className="flex items-center gap-2">
+            <Shield className="h-4 w-4" />
+            Privacy
           </TabsTrigger>
         </TabsList>
 
@@ -131,6 +135,35 @@ export function SafetyContent() {
           </Card>
         </TabsContent>
 
+        <TabsContent value="verification">
+          <VerificationTab />
+        </TabsContent>
+
+        <TabsContent value="bvn">
+          {/* BVN Verification Component will go here */}
+          <div className="p-6 border rounded-lg shadow-sm">
+            <h2 className="text-2xl font-semibold mb-4">BVN Verification</h2>
+            <p className="text-muted-foreground mb-4">
+              To verify your identity, please enter your Bank Verification Number (BVN).
+              This helps ensure the authenticity of our users.
+            </p>
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="bvn" className="block text-sm font-medium text-foreground">BVN Number</label>
+                <input
+                  type="text"
+                  id="bvn"
+                  placeholder="Enter your BVN"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                />
+              </div>
+              <button className="w-full inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
+                Verify BVN
+              </button>
+            </div>
+          </div>
+        </TabsContent>
+
         <TabsContent value="blocked">
           <BlockedUsersTab />
         </TabsContent>
@@ -139,8 +172,17 @@ export function SafetyContent() {
           <ReportHistoryTab />
         </TabsContent>
 
-        <TabsContent value="verification">
-          <VerificationTab />
+        <TabsContent value="privacy">
+          {/* Placeholder for Privacy Tab content */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Privacy Settings</CardTitle>
+              <CardDescription>Manage your privacy preferences.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p>Privacy settings content goes here.</p>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>
