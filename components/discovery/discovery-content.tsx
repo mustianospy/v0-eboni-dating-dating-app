@@ -26,6 +26,7 @@ interface User {
     url: string
     isPrimary: boolean
   }>
+  subscriptionTier: string; // Assuming subscriptionTier is a string like "FREE", "PREMIUM", etc.
 }
 
 interface DiscoveryContentProps {
@@ -33,17 +34,17 @@ interface DiscoveryContentProps {
   users: User[]
 }
 
-export function DiscoveryContent({ currentUser, users }: DiscoveryContentProps) {
+export function DiscoveryContent({ currentUser: user, users }: DiscoveryContentProps) {
   const [viewMode, setViewMode] = useState<"swipe" | "grid">("swipe")
+  const [selectedUser, setSelectedUser] = useState<User | null>(null)
   const [showFilters, setShowFilters] = useState(false)
-  const [showTravelMode, setShowTravelMode] = useState(false)
-  const [filteredUsers, setFilteredUsers] = useState(users)
+  const [travelMode, setTravelMode] = useState(false)
+  const [currentUserSubscription, setCurrentUserSubscription] = useState(user.subscriptionTier)
   const [filters, setFilters] = useState({
-    ageRange: [18, 65],
+    ageRange: [18, 50],
     maxDistance: 50,
-    genders: [] as string[],
-    orientations: [] as string[],
     interests: [] as string[],
+    gender: "any",
   })
 
   const applyFilters = (newFilters: typeof filters) => {
@@ -81,6 +82,39 @@ export function DiscoveryContent({ currentUser, users }: DiscoveryContentProps) 
     })
 
     setFilteredUsers(filtered)
+  }
+
+  const handleUnlockGallery = async () => {
+    if (selectedUser) {
+      try {
+        const response = await fetch('/api/user/unlock-gallery', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ targetUserId: selectedUser.id }),
+        })
+
+        if (response.ok) {
+          // Refresh user data to show unlocked gallery
+          window.location.reload()
+        } else {
+          // Redirect to subscription page
+          window.location.href = '/subscription'
+        }
+      } catch (error) {
+        console.error('Gallery unlock failed:', error)
+      }
+    }
+  }
+
+  const handleVideoCall = async () => {
+    if (currentUserSubscription === "FREE") {
+      window.location.href = '/subscription'
+      return
+    }
+    // Implement video call logic here
+    console.log('Starting video call...')
   }
 
   return (
@@ -150,13 +184,27 @@ export function DiscoveryContent({ currentUser, users }: DiscoveryContentProps) 
           </TabsList>
 
           <TabsContent value="swipe" className="mt-6">
-            <SwipeView users={filteredUsers} currentUser={currentUser} />
+            <SwipeView users={filteredUsers} currentUser={user} />
           </TabsContent>
 
           <TabsContent value="grid" className="mt-6">
-            <GridView users={filteredUsers} currentUser={currentUser} />
+            <GridView users={filteredUsers} currentUser={user} />
           </TabsContent>
         </Tabs>
+
+        {/* Profile Modal */}
+        {selectedUser && (
+          <ProfileModal
+            user={selectedUser}
+            currentUserSubscription={currentUserSubscription}
+            onClose={() => setSelectedUser(null)}
+            onLike={() => console.log("Liked")}
+            onPass={() => console.log("Passed")}
+            onSuperLike={() => console.log("Super liked")}
+            onUnlockGallery={handleUnlockGallery}
+            onVideoCall={handleVideoCall}
+          />
+        )}
 
         {/* Results Count */}
         <div className="text-center text-sm text-muted-foreground">

@@ -16,23 +16,45 @@ interface User {
   gender: string | null
   orientation: string | null
   interests: string[]
+  subscriptionTier: string
   photos: Array<{
     id: string
     url: string
     isPrimary: boolean
   }>
+  privatePhotos?: Array<{
+    id: string
+    url: string
+  }>
 }
 
 interface ProfileModalProps {
   user: User
+  currentUserSubscription?: string
   onClose: () => void
   onLike: () => void
   onPass: () => void
   onSuperLike: () => void
+  onUnlockGallery?: () => void
+  onVideoCall?: () => void
 }
 
-export function ProfileModal({ user, onClose, onLike, onPass, onSuperLike }: ProfileModalProps) {
+export function ProfileModal({ 
+  user, 
+  currentUserSubscription = "FREE",
+  onClose, 
+  onLike, 
+  onPass, 
+  onSuperLike,
+  onUnlockGallery,
+  onVideoCall
+}: ProfileModalProps) {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0)
+  const [showGalleryUnlock, setShowGalleryUnlock] = useState(false)
+  
+  const hasSubscription = currentUserSubscription !== "FREE"
+  const canViewGallery = hasSubscription || user.subscriptionTier === "FREE"
+  const canMakeVideoCall = hasSubscription
 
   const nextPhoto = () => {
     setCurrentPhotoIndex((prev) => (prev + 1) % user.photos.length)
@@ -138,6 +160,36 @@ export function ProfileModal({ user, onClose, onLike, onPass, onSuperLike }: Pro
             </div>
           </ScrollArea>
 
+          {/* Gallery unlock section */}
+          {!canViewGallery && user.privatePhotos && user.privatePhotos.length > 0 && (
+            <div className="p-6 border-t bg-muted/50">
+              <div className="text-center">
+                <h4 className="font-medium mb-2">Private Gallery</h4>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Subscribe to unlock {user.privatePhotos.length} private photos
+                </p>
+                <Button onClick={onUnlockGallery} className="w-full">
+                  Unlock Gallery
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Video call section */}
+          {!canMakeVideoCall && (
+            <div className="p-6 border-t bg-muted/50">
+              <div className="text-center">
+                <h4 className="font-medium mb-2">Video Calling</h4>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Subscribe to enable video calls
+                </p>
+                <Button onClick={() => window.location.href = '/subscription'} variant="outline" className="w-full">
+                  Upgrade to Call
+                </Button>
+              </div>
+            </div>
+          )}
+
           {/* Action buttons */}
           <div className="flex justify-center items-center space-x-4 p-6 border-t">
             <Button
@@ -174,6 +226,17 @@ export function ProfileModal({ user, onClose, onLike, onPass, onSuperLike }: Pro
             >
               <Heart className="h-5 w-5" />
             </Button>
+
+            {canMakeVideoCall && onVideoCall && (
+              <Button
+                size="lg"
+                variant="outline"
+                className="rounded-full h-12 w-12 p-0 border-2 hover:bg-primary hover:text-primary-foreground hover:border-primary bg-transparent"
+                onClick={onVideoCall}
+              >
+                📹
+              </Button>
+            )}
           </div>
         </div>
       </DialogContent>

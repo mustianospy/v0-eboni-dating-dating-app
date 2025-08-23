@@ -21,9 +21,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
 
-    // Check if user can unlock gallery
+    // Check if user has subscription or enough coins to unlock gallery
     const canUnlock =
-      user.subscriptionTier === "ULTRA" || (user.subscriptionTier === "PRO" && user.coins >= 5) || user.coins >= 5
+      user.subscriptionTier === "ULTRA" || 
+      user.subscriptionTier === "PRO" || 
+      user.subscriptionTier === "PLUS" || 
+      (user.subscriptionTier === "FREE" && user.coins >= 10)
 
     if (!canUnlock) {
       return NextResponse.json({ error: "Insufficient coins or subscription required" }, { status: 400 })
@@ -50,18 +53,18 @@ export async function POST(request: NextRequest) {
       ),
     )
 
-    // Deduct coins if not Ultra
-    if (user.subscriptionTier !== "ULTRA") {
+    // Deduct coins if not subscribed
+    if (user.subscriptionTier === "FREE") {
       await prisma.user.update({
         where: { id: user.id },
-        data: { coins: user.coins - 5 },
+        data: { coins: user.coins - 10 },
       })
 
       await prisma.transaction.create({
         data: {
           userId: user.id,
           type: "GALLERY_UNLOCK",
-          amount: 5,
+          amount: 10,
           status: "COMPLETED",
           description: "Private gallery unlocked",
         },

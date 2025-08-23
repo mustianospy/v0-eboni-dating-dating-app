@@ -20,6 +20,7 @@ interface User {
     url: string
     isPrimary: boolean
   }>
+  subscriptionTier?: string; // Assuming subscriptionTier is added to the User interface
 }
 
 interface Message {
@@ -129,7 +130,17 @@ export function ChatInterface({ chat, currentUser, otherParticipant }: ChatInter
             <Button variant="ghost" size="sm">
               <Phone className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="sm" onClick={() => setShowVideoCall(true)}>
+            <Button 
+              size="sm" 
+              variant="ghost"
+              onClick={() => {
+                if (currentUser.subscriptionTier === "FREE") {
+                  window.location.href = '/subscription'
+                } else {
+                  setShowVideoCall(true)
+                }
+              }}
+            >
               <Video className="h-4 w-4" />
             </Button>
             <Button variant="ghost" size="sm">
