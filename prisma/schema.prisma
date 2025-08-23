@@ -1,0 +1,322 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id                    String    @id @default(cuid())
+  name                  String?
+  email                 String    @unique
+  emailVerified         DateTime?
+  image                 String?
+  bio                   String?
+  age                   Int?
+  location              String?
+  gender                String?
+  orientation           String?
+  lookingFor            String[]
+  interests             String[]
+  isVerified            Boolean   @default(false)
+  isOnline              Boolean   @default(false)
+  lastSeen              DateTime  @default(now())
+  subscriptionTier      SubscriptionTier @default(STANDARD)
+  subscriptionExpiresAt DateTime?
+  coins                 Int       @default(0)
+  walletBalance         Float     @default(0.0)
+  hasEverPaid           Boolean   @default(false)
+  tierBenefitsUsed      Json?     @default("{}")
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  accounts              Account[]
+  sessions              Session[]
+  photos                Photo[]
+  privatePhotos         PrivatePhoto[]
+  sentLikes             Like[]    @relation("LikeSender")
+  receivedLikes         Like[]    @relation("LikeReceiver")
+  matches               Match[]   @relation("MatchUser1")
+  matchedWith           Match[]   @relation("MatchUser2")
+  sentMessages          Message[] @relation("MessageSender")
+  receivedMessages      Message[] @relation("MessageReceiver")
+  chatParticipants      ChatParticipant[]
+  reports               Report[]  @relation("ReportReporter")
+  reportedBy            Report[]  @relation("ReportReported")
+  blocks                Block[]   @relation("BlockBlocker")
+  blockedBy             Block[]   @relation("BlockBlocked")
+  transactions          Transaction[]
+  boosts                Boost[]
+  gifts                 Gift[]    @relation("GiftSender")
+  receivedGifts         Gift[]    @relation("GiftReceiver")
+  galleryUnlocks        GalleryUnlock[]
+  walletTransactions    WalletTransaction[]
+}
+
+model Photo {
+  id        String   @id @default(cuid())
+  userId    String
+  url       String
+  isPrimary Boolean  @default(false)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PrivatePhoto {
+  id        String   @id @default(cuid())
+  userId    String
+  url       String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  galleryUnlocks GalleryUnlock[]
+}
+
+model Like {
+  id         String    @id @default(cuid())
+  senderId   String
+  receiverId String
+  createdAt  DateTime  @default(now())
+
+  sender   User @relation("LikeSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("LikeReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@unique([senderId, receiverId])
+}
+
+model Match {
+  id        String   @id @default(cuid())
+  user1Id   String
+  user2Id   String
+  chatId    String   @unique
+  createdAt DateTime @default(now())
+
+  user1 User @relation("MatchUser1", fields: [user1Id], references: [id], onDelete: Cascade)
+  user2 User @relation("MatchUser2", fields: [user2Id], references: [id], onDelete: Cascade)
+  chat  Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+  @@unique([user1Id, user2Id])
+}
+
+model Chat {
+  id        String   @id @default(cuid())
+  type      ChatType @default(PRIVATE)
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  match        Match?
+  participants ChatParticipant[]
+  messages     Message[]
+}
+
+model ChatParticipant {
+  id     String @id @default(cuid())
+  chatId String
+  userId String
+
+  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([chatId, userId])
+}
+
+model Message {
+  id         String      @id @default(cuid())
+  chatId     String
+  senderId   String
+  receiverId String?
+  content    String
+  type       MessageType @default(TEXT)
+  isRead     Boolean     @default(false)
+  createdAt  DateTime    @default(now())
+
+  chat     Chat  @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  sender   User  @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User? @relation("MessageReceiver", fields: [receiverId], references: [id])
+}
+
+model Report {
+  id         String     @id @default(cuid())
+  reporterId String
+  reportedId String
+  reason     String
+  details    String?
+  status     ReportStatus @default(PENDING)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  reporter User @relation("ReportReporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  reported User @relation("ReportReported", fields: [reportedId], references: [id], onDelete: Cascade)
+}
+
+model Block {
+  id        String   @id @default(cuid())
+  blockerId String
+  blockedId String
+  createdAt DateTime @default(now())
+
+  blocker User @relation("BlockBlocker", fields: [blockerId], references: [id], onDelete: Cascade)
+  blocked User @relation("BlockBlocked", fields: [blockedId], references: [id], onDelete: Cascade)
+
+  @@unique([blockerId, blockedId])
+}
+
+model Transaction {
+  id            String            @id @default(cuid())
+  userId        String
+  type          TransactionType
+  amount        Float
+  currency      String            @default("USD")
+  status        TransactionStatus @default(PENDING)
+  stripeId      String?
+  description   String?
+  metadata      Json?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Boost {
+  id        String    @id @default(cuid())
+  userId    String
+  type      BoostType
+  expiresAt DateTime
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Gift {
+  id         String   @id @default(cuid())
+  senderId   String
+  receiverId String
+  type       String
+  message    String?
+  createdAt  DateTime @default(now())
+
+  sender   User @relation("GiftSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("GiftReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+}
+
+model GalleryUnlock {
+  id             String   @id @default(cuid())
+  userId         String
+  privatePhotoId String
+  createdAt      DateTime @default(now())
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  privatePhoto PrivatePhoto @relation(fields: [privatePhotoId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, privatePhotoId])
+}
+
+model WalletTransaction {
+  id            String                 @id @default(cuid())
+  userId        String
+  type          WalletTransactionType
+  amount        Float
+  currency      String                 @default("USD")
+  status        TransactionStatus      @default(PENDING)
+  stripeId      String?
+  description   String?
+  metadata      Json?
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum SubscriptionTier {
+  STANDARD
+  PREMIUM_SILVER
+  PREMIUM_GOLD
+  FREE
+  PLUS
+  PRO
+  ULTRA
+}
+
+enum ChatType {
+  PRIVATE
+  GROUP
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  VIDEO
+  AUDIO
+  GIFT
+}
+
+enum ReportStatus {
+  PENDING
+  REVIEWED
+  RESOLVED
+  DISMISSED
+}
+
+enum TransactionType {
+  SUBSCRIPTION
+  COINS
+  BOOST
+  GIFT
+  GALLERY_UNLOCK
+  WALLET_TOP_UP
+  TIER_UPGRADE
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum BoostType {
+  PROFILE_BOOST
+  SUPER_LIKE
+  TRAVEL_MODE
+}
+
+enum WalletTransactionType {
+  TOP_UP
+  WITHDRAWAL
+  PAYMENT
+  REFUND
+  BONUS
+}
