@@ -1,0 +1,17 @@
+node_modules/
+.next/
+out/
+dist/
+build/
+*.log
+logs/
+.env*
+.vercel/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.zip
+*.tar.gz
+coverage/
+.nyc_output/
