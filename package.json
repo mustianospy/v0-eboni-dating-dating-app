@@ -1,5 +1,5 @@
 {
-  "name": "my-v0-project",
+  "name": "ebonidating",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,7 +9,10 @@
     "start": "next start"
   },
   "dependencies": {
-    "@auth/core": "latest",
+
+    "cookie": "^0.7.0",
+    "@auth/core": "^0.40.0",
+    "next-auth": "^4.24.5",
     "@hookform/resolvers": "^3.9.1",
     "@next-auth/prisma-adapter": "latest",
     "@prisma/client": "6.14.0",
@@ -54,8 +57,8 @@
     "http": "latest",
     "input-otp": "1.4.1",
     "lucide-react": "^0.454.0",
-    "next": "14.2.16",
-    "next-auth": "latest",
+    "next": "^14.2.32",
+    "next-auth": "^4.24.7",
     "next-themes": "^0.4.4",
     "nodemailer": "latest",
     "react": "^18",
