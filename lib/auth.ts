@@ -19,7 +19,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          return null
+          throw new Error("Please enter your email and password")
         }
 
         const user = await prisma.user.findUnique({
@@ -29,11 +29,20 @@ export const authOptions: NextAuthOptions = {
         })
 
         if (!user) {
-          return null
+          throw new Error("No user found with this email address")
         }
 
-        // For demo purposes - in production, you'd hash passwords
-        // const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
+        if (!user.emailVerified) {
+          throw new Error("Please verify your email address before signing in")
+        }
+
+        // Verify password
+        const bcrypt = require("bcryptjs")
+        const isPasswordValid = await bcrypt.compare(credentials.password, user.password!)
+
+        if (!isPasswordValid) {
+          throw new Error("Invalid email or password")
+        }
 
         return {
           id: user.id,

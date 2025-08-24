@@ -58,27 +58,35 @@ export function DashboardContent({ user }: DashboardContentProps) {
             </div>
             <div className="flex items-center space-x-4">
               <Link href="/matches">
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" className="hover:bg-violet-100 dark:hover:bg-violet-900 transition-colors">
                   <MessageCircle className="h-4 w-4 mr-2" />
                   Messages
                 </Button>
               </Link>
               <Link href="/discover">
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" className="hover:bg-pink-100 dark:hover:bg-pink-900 transition-colors">
                   <Users className="h-4 w-4 mr-2" />
                   Discover
                 </Button>
               </Link>
               <Link href="/subscription">
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" className="hover:bg-orange-100 dark:hover:bg-orange-900 transition-colors">
                   <Crown className="h-4 w-4 mr-2" />
                   Premium
                 </Button>
               </Link>
-              <Button variant="ghost" size="sm">
-                <Settings className="h-4 w-4 mr-2" />
-                Settings
-              </Button>
+              <Link href="/safety">
+                <Button variant="ghost" size="sm" className="hover:bg-green-100 dark:hover:bg-green-900 transition-colors">
+                  <Shield className="h-4 w-4 mr-2" />
+                  Safety
+                </Button>
+              </Link>
+              <Link href="/wallet">
+                <Button variant="ghost" size="sm" className="hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors">
+                  <Coins className="h-4 w-4 mr-2" />
+                  Wallet
+                </Button>
+              </Link>
               <Avatar>
                 <AvatarImage src={primaryPhoto?.url || "/placeholder.svg"} />
                 <AvatarFallback>{user.name?.charAt(0) || user.email.charAt(0)}</AvatarFallback>
