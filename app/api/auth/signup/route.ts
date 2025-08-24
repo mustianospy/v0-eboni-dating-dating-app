@@ -5,7 +5,7 @@ import nodemailer from "nodemailer"
 import crypto from "crypto"
 
 // Configure email transporter
-const transporter = nodemailer.createTransporter({
+const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || "smtp.gmail.com",
   port: 587,
   secure: false,
@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { 
+      {
         message: "Account created successfully! Please check your email to verify your account.",
         userId: user.id,
         requiresVerification: true
