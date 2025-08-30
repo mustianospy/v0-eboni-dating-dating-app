@@ -1,4 +1,3 @@
-
 export function checkSubscriptionAccess(userSubscription: string, requiredFeature: 'gallery' | 'video_call'): boolean {
   const subscriptionHierarchy = {
     'FREE': 0,

@@ -1,4 +1,3 @@
-
 -- Seed data for EboniDating
 -- This script adds sample data for testing
 

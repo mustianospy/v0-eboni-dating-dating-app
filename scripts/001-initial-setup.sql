@@ -1,4 +1,3 @@
-
 -- Initial database setup for EboniDating
 -- This script creates the initial database structure
 
