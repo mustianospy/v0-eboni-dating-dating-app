@@ -1,9 +1,18 @@
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      }
+    }
     return config
   },
-  swcMinify: false,
+  swcMinify: true,
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
@@ -16,7 +25,10 @@ const nextConfig = {
   },
   eslint: {
     ignoreDuringBuilds: true,
-  }
+  },
+  experimental: {
+    serverComponentsExternalPackages: ['@prisma/client'],
+  },
 }
 
 module.exports = nextConfig

@@ -1,11 +1,9 @@
-import type React from "react"
 import type { Metadata } from "next"
 import { Montserrat } from "next/font/google"
-import { Open_Sans } from "next/font/google"
 import { SkipLink } from "@/components/ui/skip-link"
+import { ThemeProvider } from "@/components/theme-provider"
+import { Toaster } from "sonner"
 import "./globals.css"
-import { ThemeProvider } from '@/components/theme-provider'
-import { Toaster } from 'sonner'
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -22,9 +20,8 @@ const openSans = Open_Sans({
 })
 
 export const metadata: Metadata = {
-  title: "EboniDating - LGBTQ+ Dating Community",
-  description:
-    "Connect with your community. Find love, friendship, and meaningful connections in a safe, inclusive space.",
+  title: "EboniDating - Connect & Find Love",
+  description: "Premium dating platform for meaningful connections",
   generator: "v0.app",
   manifest: "/manifest.json",
   themeColor: "#8b5cf6",
@@ -49,7 +46,15 @@ export default function RootLayout({
     <html lang="en" className={`${montserrat.variable} ${openSans.variable}`}>
       <body className="font-sans antialiased">
         <SkipLink />
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   )
