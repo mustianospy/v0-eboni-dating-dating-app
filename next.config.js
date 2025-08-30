@@ -16,7 +16,6 @@ const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
-  staticPageGenerationTimeout: 1000,
   images: {
     unoptimized: true,
   },

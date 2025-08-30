@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Montserrat } from "next/font/google"
+import { Montserrat, Open_Sans } from "next/font/google"
 import { SkipLink } from "@/components/ui/skip-link"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "sonner"

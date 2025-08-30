@@ -1,7 +1,7 @@
 {
   "name": "ebonidating-socket-server",
   "version": "1.0.0",
-  "description": "Socket.IO server for EboniDating real-time features",
+  "description": "Socket.IO server for EboniDating",
   "main": "socket-server.js",
   "scripts": {
     "start": "node socket-server.js",
@@ -10,6 +10,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.21.2",
+    "node": "^22.19.0",
     "socket.io": "^4.8.1"
   },
   "devDependencies": {
