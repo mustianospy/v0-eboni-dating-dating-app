@@ -4,6 +4,8 @@ import { Montserrat } from "next/font/google"
 import { Open_Sans } from "next/font/google"
 import { SkipLink } from "@/components/ui/skip-link"
 import "./globals.css"
+import { ThemeProvider } from '@/components/theme-provider'
+import { Toaster } from 'sonner'
 
 const montserrat = Montserrat({
   subsets: ["latin"],
