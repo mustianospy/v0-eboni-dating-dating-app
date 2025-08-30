@@ -1,9 +1,9 @@
-modules = ["nodejs-20", "web"]
+modules = ["nodejs-20", "web", "nix", "nodejs-23", "nodejs-14", "typescript-language-server", "nodejs-with-prybar-18", "docker"]
 run = "npm run dev"
 
 [nix]
 channel = "stable-25_05"
-packages = ["nano"]
+packages = ["nano", "supabase-cli"]
 
 [deployment]
 run = ["sh", "-c", "npm run dev"]
@@ -30,7 +30,6 @@ externalPort = 3000
 
 [[ports]]
 localPort = 3001
-externalPort = 80
 
 [[ports]]
 localPort = 3002
