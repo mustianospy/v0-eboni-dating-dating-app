@@ -1,30 +1,25 @@
+<<<<<<< HEAD
 import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
+=======
+export const dynamic = "force-dynamic"
 
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { cardId: string } }
-) {
-  try {
-    const session = await getServerSession(authOptions)
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
+import { NextResponse } from "next/server"
+>>>>>>> 4d21eeb (Refactor config and payment flow:)
 
-    const { cardId } = params
+export async function POST(req: Request) {
+  const body = await req.json().catch(() => ({}))
+  return NextResponse.json({
+    success: true,
+    message: "Mock payment success. No real gateway used.",
+    data: body
+  })
+}
 
-    // In a real app, you would:
-    // 1. Verify the card belongs to the user
-    // 2. Update the default card in your database
-    // 3. Update Stripe customer default payment method
-
-    return NextResponse.json({ success: true })
-  } catch (error) {
-    console.error("Error setting default payment card:", error)
-    return NextResponse.json(
-      { error: "Failed to set default payment card" },
-      { status: 500 }
-    )
-  }
+export async function GET() {
+  return NextResponse.json({
+    success: true,
+    message: "Mock GET endpoint. Payments disabled in demo mode."
+  })
 }

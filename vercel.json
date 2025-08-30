@@ -10,5 +10,11 @@
     "app/api/**/*.tsx": {
       "maxDuration": 30
     }
+  },
+  "outputDirectory": ".next",
+  "ignoreCommand": "pnpm lint",
+  "regions": ["iad1"],
+  "github": {
+    "enabled": true
   }
 }

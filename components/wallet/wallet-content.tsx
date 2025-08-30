@@ -5,10 +5,10 @@ import { useSession } from "next-auth/react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Wallet, Plus, Crown, History, Coins, TrendingUp, CreditCard } from "lucide-react"
-import { WalletTopUp } from "./wallet-top-up"
+import { Wallet, Plus, Crown, History, Coins, TrendingUp, CreditCard, Star } from "lucide-react"
+import WalletTopUp from "./wallet-top-up"
 import { TransactionHistory } from "./transaction-history"
-import { TierUpgrade } from "./tier-upgrade"
+import TierUpgrade from "./tier-upgrade"
 import { PaymentCards } from "./payment-cards"
 
 interface UserData {
