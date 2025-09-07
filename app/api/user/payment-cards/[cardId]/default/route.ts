@@ -1,25 +1,20 @@
-<<<<<<< HEAD
-import { NextRequest, NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
-=======
 export const dynamic = "force-dynamic"
 
 import { NextResponse } from "next/server"
->>>>>>> 4d21eeb (Refactor config and payment flow:)
+import { prisma } from "@/lib/prisma"
 
-export async function POST(req: Request) {
-  const body = await req.json().catch(() => ({}))
-  return NextResponse.json({
-    success: true,
-    message: "Mock payment success. No real gateway used.",
-    data: body
-  })
-}
+const STRIPE_KEY = process.env.STRIPE_SECRET_KEY
 
-export async function GET() {
-  return NextResponse.json({
-    success: true,
-    message: "Mock GET endpoint. Payments disabled in demo mode."
-  })
+export async function POST(
+  req: Request,
+  { params }: { params: { cardId: string } }
+) {
+  if (!STRIPE_KEY) {
+    return NextResponse.json(
+      { error: "Card payments are not enabled. Please use wallet/coins." },
+      { status: 200 }
+    )
+  }
+
+  return NextResponse.json({ message: `Set card ${params.cardId} as default` })
 }
