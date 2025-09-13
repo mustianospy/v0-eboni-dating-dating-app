@@ -1,5 +1,6 @@
-export const dynamic = "force-dynamic";
+import { NextResponse } from "next/server";
 
-export async function POST(req) {
-  return new Response("Webhook bypassed", { status: 200 });
+export async function POST() {
+  console.log("Webhook called");
+  return NextResponse.json({ ok: true });
 }
