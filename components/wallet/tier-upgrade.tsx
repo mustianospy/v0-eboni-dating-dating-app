@@ -1,4 +1,4 @@
-import { CheckoutButton } from "./CheckoutButton"
+import { CheckoutButton } from "./CheckoutButton";
 
 export default function TierUpgrade() {
   return (
@@ -7,5 +7,5 @@ export default function TierUpgrade() {
       <p className="mb-4 text-gray-600">Unlock premium features.</p>
       <CheckoutButton priceId="price_tier_upgrade" />
     </div>
-  )
+  );
 }

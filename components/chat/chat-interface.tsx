@@ -1,66 +1,79 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect, useRef } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { ArrowLeft, Send, Phone, Video, MoreVertical, ImageIcon, Smile, Gift } from "lucide-react"
-import Link from "next/link"
-import { MessageBubble } from "./message-bubble"
-import { VideoCallModal } from "./video-call-modal"
+import { useState, useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  ArrowLeft,
+  Send,
+  Phone,
+  Video,
+  MoreVertical,
+  ImageIcon,
+  Smile,
+  Gift,
+} from "lucide-react";
+import Link from "next/link";
+import { MessageBubble } from "./message-bubble";
+import { VideoCallModal } from "./video-call-modal";
 
 interface User {
-  id: string
-  name: string | null
+  id: string;
+  name: string | null;
   photos: Array<{
-    id: string
-    url: string
-    isPrimary: boolean
-  }>
+    id: string;
+    url: string;
+    isPrimary: boolean;
+  }>;
   subscriptionTier?: string; // Assuming subscriptionTier is added to the User interface
 }
 
 interface Message {
-  id: string
-  content: string
-  type: string
-  createdAt: Date
-  sender: User
+  id: string;
+  content: string;
+  type: string;
+  createdAt: Date;
+  sender: User;
 }
 
 interface Chat {
-  id: string
-  type: string
-  name: string | null
-  messages: Message[]
+  id: string;
+  type: string;
+  name: string | null;
+  messages: Message[];
 }
 
 interface ChatInterfaceProps {
-  chat: Chat
-  currentUser: User
-  otherParticipant: User | null
+  chat: Chat;
+  currentUser: User;
+  otherParticipant: User | null;
 }
 
-export function ChatInterface({ chat, currentUser, otherParticipant }: ChatInterfaceProps) {
-  const [messages, setMessages] = useState(chat.messages)
-  const [newMessage, setNewMessage] = useState("")
-  const [isTyping, setIsTyping] = useState(false)
-  const [showVideoCall, setShowVideoCall] = useState(false)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
+export function ChatInterface({
+  chat,
+  currentUser,
+  otherParticipant,
+}: ChatInterfaceProps) {
+  const [messages, setMessages] = useState(chat.messages);
+  const [newMessage, setNewMessage] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [showVideoCall, setShowVideoCall] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
-    scrollToBottom()
-  }, [messages])
+    scrollToBottom();
+  }, [messages]);
 
   const sendMessage = async () => {
-    if (!newMessage.trim()) return
+    if (!newMessage.trim()) return;
 
     const tempMessage = {
       id: `temp-${Date.now()}`,
@@ -68,10 +81,10 @@ export function ChatInterface({ chat, currentUser, otherParticipant }: ChatInter
       type: "TEXT",
       createdAt: new Date(),
       sender: currentUser,
-    }
+    };
 
-    setMessages([...messages, tempMessage])
-    setNewMessage("")
+    setMessages([...messages, tempMessage]);
+    setNewMessage("");
 
     try {
       const response = await fetch("/api/chat/send-message", {
@@ -82,26 +95,30 @@ export function ChatInterface({ chat, currentUser, otherParticipant }: ChatInter
           content: newMessage,
           type: "TEXT",
         }),
-      })
+      });
 
       if (response.ok) {
-        const sentMessage = await response.json()
-        setMessages((prev) => prev.map((msg) => (msg.id === tempMessage.id ? sentMessage : msg)))
+        const sentMessage = await response.json();
+        setMessages((prev) =>
+          prev.map((msg) => (msg.id === tempMessage.id ? sentMessage : msg))
+        );
       }
     } catch (error) {
-      console.error("Error sending message:", error)
+      console.error("Error sending message:", error);
     }
-  }
+  };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault()
-      sendMessage()
+      e.preventDefault();
+      sendMessage();
     }
-  }
+  };
 
-  const chatTitle = chat.type === "PRIVATE" ? otherParticipant?.name : chat.name
-  const chatAvatar = chat.type === "PRIVATE" ? otherParticipant?.photos[0]?.url : null
+  const chatTitle =
+    chat.type === "PRIVATE" ? otherParticipant?.name : chat.name;
+  const chatAvatar =
+    chat.type === "PRIVATE" ? otherParticipant?.photos[0]?.url : null;
 
   return (
     <div className="h-screen flex flex-col bg-gradient-to-br from-background via-card to-background">
@@ -122,7 +139,9 @@ export function ChatInterface({ chat, currentUser, otherParticipant }: ChatInter
 
             <div>
               <h2 className="font-semibold">{chatTitle}</h2>
-              {isTyping && <p className="text-xs text-muted-foreground">Typing...</p>}
+              {isTyping && (
+                <p className="text-xs text-muted-foreground">Typing...</p>
+              )}
             </div>
           </div>
 
@@ -130,14 +149,14 @@ export function ChatInterface({ chat, currentUser, otherParticipant }: ChatInter
             <Button variant="ghost" size="sm">
               <Phone className="h-4 w-4" />
             </Button>
-            <Button 
-              size="sm" 
+            <Button
+              size="sm"
               variant="ghost"
               onClick={() => {
                 if (currentUser.subscriptionTier === "FREE") {
-                  window.location.href = '/subscription'
+                  window.location.href = "/subscription";
                 } else {
-                  setShowVideoCall(true)
+                  setShowVideoCall(true);
                 }
               }}
             >
@@ -158,7 +177,10 @@ export function ChatInterface({ chat, currentUser, otherParticipant }: ChatInter
               key={message.id}
               message={message}
               isOwn={message.sender.id === currentUser.id}
-              showAvatar={index === 0 || messages[index - 1].sender.id !== message.sender.id}
+              showAvatar={
+                index === 0 ||
+                messages[index - 1].sender.id !== message.sender.id
+              }
             />
           ))}
           <div ref={messagesEndRef} />
@@ -200,7 +222,12 @@ export function ChatInterface({ chat, currentUser, otherParticipant }: ChatInter
       </div>
 
       {/* Video Call Modal */}
-      {showVideoCall && <VideoCallModal otherUser={otherParticipant} onClose={() => setShowVideoCall(false)} />}
+      {showVideoCall && (
+        <VideoCallModal
+          otherUser={otherParticipant}
+          onClose={() => setShowVideoCall(false)}
+        />
+      )}
     </div>
-  )
+  );
 }

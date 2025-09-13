@@ -1,6 +1,6 @@
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
-import TierUpgrade from "@/components/wallet/tier-upgrade"
+import TierUpgrade from "@/components/wallet/tier-upgrade";
 
 export default function SubscriptionPage() {
   return (
@@ -8,5 +8,5 @@ export default function SubscriptionPage() {
       <h1 className="text-2xl font-bold mb-4">Subscription</h1>
       <TierUpgrade />
     </div>
-  )
+  );
 }

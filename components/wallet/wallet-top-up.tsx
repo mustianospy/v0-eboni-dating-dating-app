@@ -1,4 +1,4 @@
-import { CheckoutButton } from "./CheckoutButton"
+import { CheckoutButton } from "./CheckoutButton";
 
 export default function WalletTopUp() {
   return (
@@ -7,5 +7,5 @@ export default function WalletTopUp() {
       <p className="mb-4 text-gray-600">Buy coins to use premium features.</p>
       <CheckoutButton priceId="price_wallet_topup" />
     </div>
-  )
+  );
 }

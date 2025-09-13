@@ -1,93 +1,93 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Heart, X, Star, Info } from "lucide-react"
-import { ProfileModal } from "./profile-modal"
+import { useState } from "react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Heart, X, Star, Info } from "lucide-react";
+import { ProfileModal } from "./profile-modal";
 
 interface User {
-  id: string
-  name: string | null
-  bio: string | null
-  age: number | null
-  location: string | null
-  gender: string | null
-  orientation: string | null
-  interests: string[]
+  id: string;
+  name: string | null;
+  bio: string | null;
+  age: number | null;
+  location: string | null;
+  gender: string | null;
+  orientation: string | null;
+  interests: string[];
   photos: Array<{
-    id: string
-    url: string
-    isPrimary: boolean
-  }>
+    id: string;
+    url: string;
+    isPrimary: boolean;
+  }>;
 }
 
 interface SwipeViewProps {
-  users: User[]
-  currentUser: User
+  users: User[];
+  currentUser: User;
 }
 
 export function SwipeView({ users, currentUser }: SwipeViewProps) {
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [selectedUser, setSelectedUser] = useState<User | null>(null)
-  const [isAnimating, setIsAnimating] = useState(false)
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
 
-  const currentUser_display = users[currentIndex]
+  const currentUser_display = users[currentIndex];
 
   const handleLike = async () => {
-    if (!currentUser_display || isAnimating) return
+    if (!currentUser_display || isAnimating) return;
 
-    setIsAnimating(true)
+    setIsAnimating(true);
 
     try {
       await fetch("/api/user/like", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ targetUserId: currentUser_display.id }),
-      })
+      });
 
       setTimeout(() => {
-        setCurrentIndex((prev) => prev + 1)
-        setIsAnimating(false)
-      }, 300)
+        setCurrentIndex((prev) => prev + 1);
+        setIsAnimating(false);
+      }, 300);
     } catch (error) {
-      console.error("Error liking user:", error)
-      setIsAnimating(false)
+      console.error("Error liking user:", error);
+      setIsAnimating(false);
     }
-  }
+  };
 
   const handlePass = () => {
-    if (isAnimating) return
+    if (isAnimating) return;
 
-    setIsAnimating(true)
+    setIsAnimating(true);
     setTimeout(() => {
-      setCurrentIndex((prev) => prev + 1)
-      setIsAnimating(false)
-    }, 300)
-  }
+      setCurrentIndex((prev) => prev + 1);
+      setIsAnimating(false);
+    }, 300);
+  };
 
   const handleSuperLike = async () => {
-    if (!currentUser_display || isAnimating) return
+    if (!currentUser_display || isAnimating) return;
 
-    setIsAnimating(true)
+    setIsAnimating(true);
 
     try {
       await fetch("/api/user/super-like", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ targetUserId: currentUser_display.id }),
-      })
+      });
 
       setTimeout(() => {
-        setCurrentIndex((prev) => prev + 1)
-        setIsAnimating(false)
-      }, 300)
+        setCurrentIndex((prev) => prev + 1);
+        setIsAnimating(false);
+      }, 300);
     } catch (error) {
-      console.error("Error super liking user:", error)
-      setIsAnimating(false)
+      console.error("Error super liking user:", error);
+      setIsAnimating(false);
     }
-  }
+  };
 
   if (currentIndex >= users.length) {
     return (
@@ -95,16 +95,19 @@ export function SwipeView({ users, currentUser }: SwipeViewProps) {
         <Heart className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
         <h3 className="text-2xl font-semibold mb-2">No more profiles!</h3>
         <p className="text-muted-foreground mb-6">
-          You've seen everyone in your area. Try adjusting your filters or check back later.
+          You've seen everyone in your area. Try adjusting your filters or check
+          back later.
         </p>
         <Button onClick={() => setCurrentIndex(0)}>Start Over</Button>
       </div>
-    )
+    );
   }
 
-  if (!currentUser_display) return null
+  if (!currentUser_display) return null;
 
-  const primaryPhoto = currentUser_display.photos.find((photo) => photo.isPrimary) || currentUser_display.photos[0]
+  const primaryPhoto =
+    currentUser_display.photos.find((photo) => photo.isPrimary) ||
+    currentUser_display.photos[0];
 
   return (
     <div className="max-w-md mx-auto">
@@ -113,7 +116,10 @@ export function SwipeView({ users, currentUser }: SwipeViewProps) {
       >
         <div className="relative aspect-[3/4]">
           <img
-            src={primaryPhoto?.url || "/placeholder.svg?height=600&width=450&query=profile photo"}
+            src={
+              primaryPhoto?.url ||
+              "/placeholder.svg?height=600&width=450&query=profile photo"
+            }
             alt={`${currentUser_display.name}'s photo`}
             className="w-full h-full object-cover"
           />
@@ -137,20 +143,31 @@ export function SwipeView({ users, currentUser }: SwipeViewProps) {
               </Button>
             </div>
 
-            <p className="text-sm opacity-90 mb-3">{currentUser_display.location}</p>
+            <p className="text-sm opacity-90 mb-3">
+              {currentUser_display.location}
+            </p>
 
             {currentUser_display.bio && (
-              <p className="text-sm opacity-90 mb-3 line-clamp-2">{currentUser_display.bio}</p>
+              <p className="text-sm opacity-90 mb-3 line-clamp-2">
+                {currentUser_display.bio}
+              </p>
             )}
 
             <div className="flex flex-wrap gap-1">
               {currentUser_display.interests.slice(0, 3).map((interest) => (
-                <Badge key={interest} variant="secondary" className="bg-white/20 text-white border-0 text-xs">
+                <Badge
+                  key={interest}
+                  variant="secondary"
+                  className="bg-white/20 text-white border-0 text-xs"
+                >
                   {interest}
                 </Badge>
               ))}
               {currentUser_display.interests.length > 3 && (
-                <Badge variant="secondary" className="bg-white/20 text-white border-0 text-xs">
+                <Badge
+                  variant="secondary"
+                  className="bg-white/20 text-white border-0 text-xs"
+                >
                   +{currentUser_display.interests.length - 3}
                 </Badge>
               )}
@@ -202,5 +219,5 @@ export function SwipeView({ users, currentUser }: SwipeViewProps) {
         />
       )}
     </div>
-  )
+  );
 }

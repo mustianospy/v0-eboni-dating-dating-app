@@ -1,24 +1,24 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import { X, MapPin, Plane } from "lucide-react"
+import { useState } from "react";
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { X, MapPin, Plane } from "lucide-react";
 
 interface TravelModeProps {
-  onClose: () => void
+  onClose: () => void;
 }
 
 export function TravelMode({ onClose }: TravelModeProps) {
-  const [isEnabled, setIsEnabled] = useState(false)
-  const [destination, setDestination] = useState("")
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [destination, setDestination] = useState("");
   const [travelDates, setTravelDates] = useState({
     start: "",
     end: "",
-  })
+  });
 
   const handleSave = async () => {
     try {
@@ -31,12 +31,12 @@ export function TravelMode({ onClose }: TravelModeProps) {
           startDate: travelDates.start,
           endDate: travelDates.end,
         }),
-      })
-      onClose()
+      });
+      onClose();
     } catch (error) {
-      console.error("Error saving travel mode:", error)
+      console.error("Error saving travel mode:", error);
     }
-  }
+  };
 
   return (
     <>
@@ -53,7 +53,9 @@ export function TravelMode({ onClose }: TravelModeProps) {
         <div className="flex items-center justify-between">
           <div className="space-y-1">
             <Label>Enable Travel Mode</Label>
-            <p className="text-sm text-muted-foreground">Connect with people in your travel destination</p>
+            <p className="text-sm text-muted-foreground">
+              Connect with people in your travel destination
+            </p>
           </div>
           <Switch checked={isEnabled} onCheckedChange={setIsEnabled} />
         </div>
@@ -81,7 +83,9 @@ export function TravelMode({ onClose }: TravelModeProps) {
                   id="start-date"
                   type="date"
                   value={travelDates.start}
-                  onChange={(e) => setTravelDates({ ...travelDates, start: e.target.value })}
+                  onChange={(e) =>
+                    setTravelDates({ ...travelDates, start: e.target.value })
+                  }
                 />
               </div>
               <div className="space-y-2">
@@ -90,7 +94,9 @@ export function TravelMode({ onClose }: TravelModeProps) {
                   id="end-date"
                   type="date"
                   value={travelDates.end}
-                  onChange={(e) => setTravelDates({ ...travelDates, end: e.target.value })}
+                  onChange={(e) =>
+                    setTravelDates({ ...travelDates, end: e.target.value })
+                  }
                 />
               </div>
             </div>
@@ -108,7 +114,11 @@ export function TravelMode({ onClose }: TravelModeProps) {
         )}
 
         <div className="flex space-x-3 pt-4">
-          <Button onClick={onClose} variant="outline" className="flex-1 bg-transparent">
+          <Button
+            onClick={onClose}
+            variant="outline"
+            className="flex-1 bg-transparent"
+          >
             Cancel
           </Button>
           <Button onClick={handleSave} className="flex-1">
@@ -117,5 +127,5 @@ export function TravelMode({ onClose }: TravelModeProps) {
         </div>
       </CardContent>
     </>
-  )
+  );
 }

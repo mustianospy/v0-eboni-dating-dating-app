@@ -1,24 +1,24 @@
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
-import { getServerSession } from "next-auth"
-import { redirect } from "next/navigation"
-import { authOptions } from "@/lib/auth"
-import { prisma } from "@/lib/prisma"
-import { MatchesContent } from "@/components/matches/matches-content"
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { MatchesContent } from "@/components/matches/matches-content";
 
 export default async function MatchesPage() {
-  const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions);
 
   if (!session) {
-    redirect("/auth/signin")
+    redirect("/auth/signin");
   }
 
   const currentUser = await prisma.user.findUnique({
     where: { email: session.user.email! },
-  })
+  });
 
   if (!currentUser) {
-    redirect("/auth/signin")
+    redirect("/auth/signin");
   }
 
   // Get user's matches
@@ -51,7 +51,7 @@ export default async function MatchesPage() {
       },
     },
     orderBy: { createdAt: "desc" },
-  })
+  });
 
   // Get recent likes received
   const recentLikes = await prisma.like.findMany({
@@ -67,7 +67,13 @@ export default async function MatchesPage() {
     },
     orderBy: { createdAt: "desc" },
     take: 10,
-  })
+  });
 
-  return <MatchesContent currentUser={currentUser} matches={matches} recentLikes={recentLikes} />
+  return (
+    <MatchesContent
+      currentUser={currentUser}
+      matches={matches}
+      recentLikes={recentLikes}
+    />
+  );
 }

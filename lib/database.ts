@@ -1,29 +1,29 @@
-import { prisma } from "./prisma"
+import { prisma } from "./prisma";
 
 export async function initializeDatabase() {
   try {
     // Test database connection
-    await prisma.$connect()
-    console.log("✅ Database connected successfully")
-    
+    await prisma.$connect();
+    console.log("✅ Database connected successfully");
+
     // Run basic health check
-    const userCount = await prisma.user.count()
-    console.log(`📊 Database has ${userCount} users`)
-    
-    return true
+    const userCount = await prisma.user.count();
+    console.log(`📊 Database has ${userCount} users`);
+
+    return true;
   } catch (error) {
-    console.error("❌ Database connection failed:", error)
-    return false
+    console.error("❌ Database connection failed:", error);
+    return false;
   }
 }
 
 export async function seedDatabase() {
   try {
     // Check if database is already seeded
-    const existingUsers = await prisma.user.count()
+    const existingUsers = await prisma.user.count();
     if (existingUsers > 0) {
-      console.log("📊 Database already has data, skipping seed")
-      return
+      console.log("📊 Database already has data, skipping seed");
+      return;
     }
 
     // Create sample users
@@ -73,44 +73,44 @@ export async function seedDatabase() {
         subscriptionTier: "PREMIUM_SILVER" as const,
         coins: 75,
       },
-    ]
+    ];
 
     // Create users
     for (const userData of sampleUsers) {
       await prisma.user.create({
         data: userData,
-      })
+      });
     }
 
-    console.log("✅ Database seeded successfully")
+    console.log("✅ Database seeded successfully");
   } catch (error) {
-    console.error("❌ Database seeding failed:", error)
+    console.error("❌ Database seeding failed:", error);
   }
 }
 
 export async function clearDatabase() {
   try {
     // Delete in correct order to avoid foreign key constraints
-    await prisma.message.deleteMany()
-    await prisma.chatParticipant.deleteMany()
-    await prisma.match.deleteMany()
-    await prisma.chat.deleteMany()
-    await prisma.like.deleteMany()
-    await prisma.photo.deleteMany()
-    await prisma.privatePhoto.deleteMany()
-    await prisma.report.deleteMany()
-    await prisma.block.deleteMany()
-    await prisma.transaction.deleteMany()
-    await prisma.boost.deleteMany()
-    await prisma.gift.deleteMany()
-    await prisma.galleryUnlock.deleteMany()
-    await prisma.walletTransaction.deleteMany()
-    await prisma.session.deleteMany()
-    await prisma.account.deleteMany()
-    await prisma.user.deleteMany()
+    await prisma.message.deleteMany();
+    await prisma.chatParticipant.deleteMany();
+    await prisma.match.deleteMany();
+    await prisma.chat.deleteMany();
+    await prisma.like.deleteMany();
+    await prisma.photo.deleteMany();
+    await prisma.privatePhoto.deleteMany();
+    await prisma.report.deleteMany();
+    await prisma.block.deleteMany();
+    await prisma.transaction.deleteMany();
+    await prisma.boost.deleteMany();
+    await prisma.gift.deleteMany();
+    await prisma.galleryUnlock.deleteMany();
+    await prisma.walletTransaction.deleteMany();
+    await prisma.session.deleteMany();
+    await prisma.account.deleteMany();
+    await prisma.user.deleteMany();
 
-    console.log("✅ Database cleared successfully")
+    console.log("✅ Database cleared successfully");
   } catch (error) {
-    console.error("❌ Database clearing failed:", error)
+    console.error("❌ Database clearing failed:", error);
   }
 }

@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Coins, Zap, Gift, Eye, Bolt as Boost } from "lucide-react"
-import { loadStripe } from "@stripe/stripe-js"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Coins, Zap, Gift, Eye, Bolt as Boost } from "lucide-react";
+import { loadStripe } from "@stripe/stripe-js";
 
 interface CoinsStoreProps {
-  currentCoins: number
+  currentCoins: number;
 }
 
 const COIN_PACKAGES = [
@@ -39,7 +39,7 @@ const COIN_PACKAGES = [
     bonus: 35,
     popular: false,
   },
-]
+];
 
 const COIN_FEATURES = [
   {
@@ -66,9 +66,11 @@ const COIN_FEATURES = [
     cost: 2,
     description: "Send a special gift to someone",
   },
-]
+];
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+);
 
 export function CoinsStore({ currentCoins }: CoinsStoreProps) {
   const handlePurchaseCoins = async (packageId: string) => {
@@ -80,18 +82,18 @@ export function CoinsStore({ currentCoins }: CoinsStoreProps) {
           priceId: packageId,
           type: "coins",
         }),
-      })
+      });
 
-      const { sessionId } = await response.json()
-      const stripe = await stripePromise
+      const { sessionId } = await response.json();
+      const stripe = await stripePromise;
 
       if (stripe) {
-        await stripe.redirectToCheckout({ sessionId })
+        await stripe.redirectToCheckout({ sessionId });
       }
     } catch (error) {
-      console.error("Error purchasing coins:", error)
+      console.error("Error purchasing coins:", error);
     }
-  }
+  };
 
   return (
     <div className="space-y-8">
@@ -104,8 +106,12 @@ export function CoinsStore({ currentCoins }: CoinsStoreProps) {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold text-secondary">{currentCoins} coins</div>
-          <p className="text-muted-foreground mt-1">Use coins to unlock premium features and stand out</p>
+          <div className="text-3xl font-bold text-secondary">
+            {currentCoins} coins
+          </div>
+          <p className="text-muted-foreground mt-1">
+            Use coins to unlock premium features and stand out
+          </p>
         </CardContent>
       </Card>
 
@@ -114,10 +120,15 @@ export function CoinsStore({ currentCoins }: CoinsStoreProps) {
         <h3 className="text-xl font-semibold mb-4">Buy Coins</h3>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
           {COIN_PACKAGES.map((pkg) => (
-            <Card key={pkg.id} className={`relative ${pkg.popular ? "ring-2 ring-secondary" : ""}`}>
+            <Card
+              key={pkg.id}
+              className={`relative ${pkg.popular ? "ring-2 ring-secondary" : ""}`}
+            >
               {pkg.popular && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <Badge className="bg-secondary text-secondary-foreground">Best Value</Badge>
+                  <Badge className="bg-secondary text-secondary-foreground">
+                    Best Value
+                  </Badge>
                 </div>
               )}
 
@@ -127,7 +138,10 @@ export function CoinsStore({ currentCoins }: CoinsStoreProps) {
                 </div>
                 <CardTitle className="text-xl">
                   {pkg.coins}
-                  {pkg.bonus > 0 && <span className="text-secondary"> +{pkg.bonus}</span>} coins
+                  {pkg.bonus > 0 && (
+                    <span className="text-secondary"> +{pkg.bonus}</span>
+                  )}{" "}
+                  coins
                 </CardTitle>
                 <div className="text-2xl font-bold">
                   <span className="text-sm font-normal">$</span>
@@ -156,7 +170,9 @@ export function CoinsStore({ currentCoins }: CoinsStoreProps) {
 
       {/* What You Can Do With Coins */}
       <div>
-        <h3 className="text-xl font-semibold mb-4">What You Can Do With Coins</h3>
+        <h3 className="text-xl font-semibold mb-4">
+          What You Can Do With Coins
+        </h3>
         <div className="grid md:grid-cols-2 gap-4">
           {COIN_FEATURES.map((feature) => (
             <Card key={feature.name}>
@@ -172,7 +188,9 @@ export function CoinsStore({ currentCoins }: CoinsStoreProps) {
                         {feature.cost} coins
                       </Badge>
                     </div>
-                    <p className="text-sm text-muted-foreground">{feature.description}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {feature.description}
+                    </p>
                   </div>
                 </div>
               </CardContent>
@@ -181,5 +199,5 @@ export function CoinsStore({ currentCoins }: CoinsStoreProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

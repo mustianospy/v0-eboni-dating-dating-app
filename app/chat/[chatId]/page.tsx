@@ -1,22 +1,22 @@
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
-import { getServerSession } from "next-auth"
-import { redirect } from "next/navigation"
-import { authOptions } from "@/lib/auth"
-import { prisma } from "@/lib/prisma"
-import { ChatInterface } from "@/components/chat/chat-interface"
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { ChatInterface } from "@/components/chat/chat-interface";
 
 interface ChatPageProps {
   params: {
-    chatId: string
-  }
+    chatId: string;
+  };
 }
 
 export default async function ChatPage({ params }: ChatPageProps) {
-  const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions);
 
   if (!session) {
-    redirect("/auth/signin")
+    redirect("/auth/signin");
   }
 
   const currentUser = await prisma.user.findUnique({
@@ -26,10 +26,10 @@ export default async function ChatPage({ params }: ChatPageProps) {
         where: { isPrimary: true },
       },
     },
-  })
+  });
 
   if (!currentUser) {
-    redirect("/auth/signin")
+    redirect("/auth/signin");
   }
 
   // Get chat with participants and messages
@@ -60,20 +60,30 @@ export default async function ChatPage({ params }: ChatPageProps) {
         orderBy: { createdAt: "asc" },
       },
     },
-  })
+  });
 
   if (!chat) {
-    redirect("/matches")
+    redirect("/matches");
   }
 
   // Check if current user is a participant
-  const isParticipant = chat.participants.some((p) => p.userId === currentUser.id)
+  const isParticipant = chat.participants.some(
+    (p) => p.userId === currentUser.id
+  );
   if (!isParticipant) {
-    redirect("/matches")
+    redirect("/matches");
   }
 
   // Get the other participant (for private chats)
-  const otherParticipant = chat.participants.find((p) => p.userId !== currentUser.id)
+  const otherParticipant = chat.participants.find(
+    (p) => p.userId !== currentUser.id
+  );
 
-  return <ChatInterface chat={chat} currentUser={currentUser} otherParticipant={otherParticipant?.user || null} />
+  return (
+    <ChatInterface
+      chat={chat}
+      currentUser={currentUser}
+      otherParticipant={otherParticipant?.user || null}
+    />
+  );
 }

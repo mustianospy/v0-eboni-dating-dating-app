@@ -1,83 +1,116 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useSession } from "next-auth/react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Wallet, Plus, Crown, History, Coins, TrendingUp, CreditCard, Star } from "lucide-react"
-import WalletTopUp from "./wallet-top-up"
-import { TransactionHistory } from "./transaction-history"
-import TierUpgrade from "./tier-upgrade"
-import { PaymentCards } from "./payment-cards"
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Wallet,
+  Plus,
+  Crown,
+  History,
+  Coins,
+  TrendingUp,
+  CreditCard,
+  Star,
+} from "lucide-react";
+import WalletTopUp from "./wallet-top-up";
+import { TransactionHistory } from "./transaction-history";
+import TierUpgrade from "./tier-upgrade";
+import { PaymentCards } from "./payment-cards";
 
 interface UserData {
-  walletBalance: number
-  subscriptionTier: string
-  hasEverPaid: boolean
-  tierBenefitsUsed: any
+  walletBalance: number;
+  subscriptionTier: string;
+  hasEverPaid: boolean;
+  tierBenefitsUsed: any;
 }
 
 export function WalletContent() {
-  const { data: session } = useSession()
-  const [userData, setUserData] = useState<UserData | null>(null)
-  const [loading, setLoading] = useState(true)
+  const { data: session } = useSession();
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchUserData()
-  }, [])
+    fetchUserData();
+  }, []);
 
   const fetchUserData = async () => {
     try {
-      const response = await fetch("/api/user/wallet")
-      const data = await response.json()
-      setUserData(data)
+      const response = await fetch("/api/user/wallet");
+      const data = await response.json();
+      setUserData(data);
     } catch (error) {
-      console.error("Error fetching user data:", error)
+      console.error("Error fetching user data:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const getTierInfo = (tier: string) => {
     switch (tier) {
       case "STANDARD":
-        return { name: "Standard", icon: Star, color: "bg-gray-500", benefits: ["Basic messaging", "Limited likes"] }
+        return {
+          name: "Standard",
+          icon: Star,
+          color: "bg-gray-500",
+          benefits: ["Basic messaging", "Limited likes"],
+        };
       case "PREMIUM_SILVER":
         return {
           name: "Premium Silver",
           icon: Star,
           color: "bg-gray-400",
           benefits: ["Unlimited messaging", "Video calls", "Advanced filters"],
-        }
+        };
       case "PREMIUM_GOLD":
         return {
           name: "Premium Gold",
           icon: Crown,
           color: "bg-yellow-500",
-          benefits: ["All Silver benefits", "Priority matching", "Exclusive features"],
-        }
+          benefits: [
+            "All Silver benefits",
+            "Priority matching",
+            "Exclusive features",
+          ],
+        };
       default:
-        return { name: "Standard", icon: Star, color: "bg-gray-500", benefits: ["Basic features"] }
+        return {
+          name: "Standard",
+          icon: Star,
+          color: "bg-gray-500",
+          benefits: ["Basic features"],
+        };
     }
-  }
+  };
 
   if (loading) {
-    return <div className="flex items-center justify-center min-h-screen">Loading...</div>
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        Loading...
+      </div>;
+    );
   }
 
   if (!userData) {
-    return <div className="flex items-center justify-center min-h-screen">Error loading wallet data</div>
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        Error loading wallet data
+      </div>;
+    );
   }
 
-  const tierInfo = getTierInfo(userData.subscriptionTier)
-  const TierIcon = tierInfo.icon
+  const tierInfo = getTierInfo(userData.subscriptionTier);
+  const TierIcon = tierInfo.icon;
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">My Wallet</h1>
-        <p className="text-gray-600">Manage your balance, transactions, and account tier</p>
+        <p className="text-gray-600">
+          Manage your balance, transactions, and account tier
+        </p>
       </div>
 
       {/* Wallet Balance Card */}
@@ -95,11 +128,15 @@ export function WalletContent() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="text-4xl font-bold mb-2">${userData.walletBalance.toFixed(2)}</div>
+          <div className="text-4xl font-bold mb-2">
+            ${userData.walletBalance.toFixed(2)}
+          </div>
           <p className="text-purple-100">Available balance</p>
           {!userData.hasEverPaid && (
             <div className="mt-4 p-3 bg-red-500/20 rounded-lg">
-              <p className="text-sm">⚠️ Payment required to access messaging and calling features</p>
+              <p className="text-sm">
+                ⚠️ Payment required to access messaging and calling features
+              </p>
             </div>
           )}
         </CardContent>
@@ -130,7 +167,10 @@ export function WalletContent() {
         </TabsContent>
 
         <TabsContent value="upgrade" className="space-y-6">
-          <TierUpgrade currentTier={userData.subscriptionTier} onSuccess={fetchUserData} />
+          <TierUpgrade
+            currentTier={userData.subscriptionTier}
+            onSuccess={fetchUserData}
+          />
         </TabsContent>
 
         <TabsContent value="cards" className="space-y-6">
@@ -142,5 +182,5 @@ export function WalletContent() {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }

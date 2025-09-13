@@ -1,17 +1,20 @@
-"use client"
+"use client";
 
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface BasicInfoStepProps {
   formData: {
-    age: string
-    location: string
-  }
-  updateFormData: (data: any) => void
+    age: string;
+    location: string;
+  };
+  updateFormData: (data: any) => void;
 }
 
-export function BasicInfoStep({ formData, updateFormData }: BasicInfoStepProps) {
+export function BasicInfoStep({
+  formData,
+  updateFormData,
+}: BasicInfoStepProps) {
   return (
     <div className="space-y-6">
       <div className="space-y-2">
@@ -36,5 +39,5 @@ export function BasicInfoStep({ formData, updateFormData }: BasicInfoStepProps) 
         />
       </div>
     </div>
-  )
+  );
 }

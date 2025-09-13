@@ -1,35 +1,35 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Heart, Crown, Star, Zap, Check, Coins } from "lucide-react"
-import Link from "next/link"
-import { SubscriptionTierCard } from "./subscription-tier-card"
-import { CoinsStore } from "./coins-store"
-import { TransactionHistory } from "./transaction-history"
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Heart, Crown, Star, Zap, Check, Coins } from "lucide-react";
+import Link from "next/link";
+import { SubscriptionTierCard } from "./subscription-tier-card";
+import { CoinsStore } from "./coins-store";
+import { TransactionHistory } from "./transaction-history";
 
 interface User {
-  id: string
-  name: string | null
-  email: string
-  subscriptionTier: string
-  subscriptionExpiresAt: Date | null
-  coins: number
+  id: string;
+  name: string | null;
+  email: string;
+  subscriptionTier: string;
+  subscriptionExpiresAt: Date | null;
+  coins: number;
   transactions: Array<{
-    id: string
-    type: string
-    amount: number
-    status: string
-    description: string | null
-    createdAt: Date
-  }>
+    id: string;
+    type: string;
+    amount: number;
+    status: string;
+    description: string | null;
+    createdAt: Date;
+  }>;
 }
 
 interface SubscriptionContentProps {
-  user: User
+  user: User;
 }
 
 const SUBSCRIPTION_TIERS = [
@@ -47,7 +47,12 @@ const SUBSCRIPTION_TIERS = [
       "Basic messaging",
       "Standard support",
     ],
-    limitations: ["No super likes", "No boosts", "No private gallery access", "Limited filters"],
+    limitations: [
+      "No super likes",
+      "No boosts",
+      "No private gallery access",
+      "Limited filters",
+    ],
   },
   {
     id: "PLUS",
@@ -105,12 +110,14 @@ const SUBSCRIPTION_TIERS = [
     ],
     limitations: [],
   },
-]
+];
 
 export function SubscriptionContent({ user }: SubscriptionContentProps) {
-  const [activeTab, setActiveTab] = useState("plans")
+  const [activeTab, setActiveTab] = useState("plans");
 
-  const currentTier = SUBSCRIPTION_TIERS.find((tier) => tier.id === user.subscriptionTier) || SUBSCRIPTION_TIERS[0]
+  const currentTier =
+    SUBSCRIPTION_TIERS.find((tier) => tier.id === user.subscriptionTier) ||
+    SUBSCRIPTION_TIERS[0];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-card to-background">
@@ -147,7 +154,14 @@ export function SubscriptionContent({ user }: SubscriptionContentProps) {
               <div className="flex items-center justify-between">
                 <div>
                   <div className="flex items-center space-x-2 mb-2">
-                    <Badge variant={user.subscriptionTier === "FREE" ? "secondary" : "default"} className="text-sm">
+                    <Badge
+                      variant={
+                        user.subscriptionTier === "FREE"
+                          ? "secondary"
+                          : "default"
+                      }
+                      className="text-sm"
+                    >
                       {currentTier.name}
                     </Badge>
                     {user.subscriptionTier !== "FREE" && (
@@ -270,5 +284,5 @@ export function SubscriptionContent({ user }: SubscriptionContentProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

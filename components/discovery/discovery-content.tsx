@@ -1,64 +1,76 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Heart, Grid3X3, Filter, MapPin, Settings } from "lucide-react"
-import { SwipeView } from "./swipe-view"
-import { GridView } from "./grid-view"
-import { FilterPanel } from "./filter-panel"
-import { TravelMode } from "./travel-mode"
-import Link from "next/link"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Heart, Grid3X3, Filter, MapPin, Settings } from "lucide-react";
+import { SwipeView } from "./swipe-view";
+import { GridView } from "./grid-view";
+import { FilterPanel } from "./filter-panel";
+import { TravelMode } from "./travel-mode";
+import Link from "next/link";
 
 interface User {
-  id: string
-  name: string | null
-  email: string
-  bio: string | null
-  age: number | null
-  location: string | null
-  gender: string | null
-  orientation: string | null
-  interests: string[]
+  id: string;
+  name: string | null;
+  email: string;
+  bio: string | null;
+  age: number | null;
+  location: string | null;
+  gender: string | null;
+  orientation: string | null;
+  interests: string[];
   photos: Array<{
-    id: string
-    url: string
-    isPrimary: boolean
-  }>
+    id: string;
+    url: string;
+    isPrimary: boolean;
+  }>;
   subscriptionTier: string; // Assuming subscriptionTier is a string like "FREE", "PREMIUM", etc.
 }
 
 interface DiscoveryContentProps {
-  currentUser: User
-  users: User[]
+  currentUser: User;
+  users: User[];
 }
 
-export function DiscoveryContent({ currentUser: user, users }: DiscoveryContentProps) {
-  const [viewMode, setViewMode] = useState<"swipe" | "grid">("swipe")
-  const [selectedUser, setSelectedUser] = useState<User | null>(null)
-  const [showFilters, setShowFilters] = useState(false)
-  const [travelMode, setTravelMode] = useState(false)
-  const [currentUserSubscription, setCurrentUserSubscription] = useState(user.subscriptionTier)
+export function DiscoveryContent({
+  currentUser: user,
+  users,
+}: DiscoveryContentProps) {
+  const [viewMode, setViewMode] = useState<"swipe" | "grid">("swipe");
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
+  const [travelMode, setTravelMode] = useState(false);
+  const [currentUserSubscription, setCurrentUserSubscription] = useState(
+    user.subscriptionTier
+  );
   const [filters, setFilters] = useState({
     ageRange: [18, 50],
     maxDistance: 50,
     interests: [] as string[],
     gender: "any",
-  })
+  });
 
   const applyFilters = (newFilters: typeof filters) => {
-    setFilters(newFilters)
+    setFilters(newFilters);
 
     const filtered = users.filter((user) => {
       // Age filter
-      if (user.age && (user.age < newFilters.ageRange[0] || user.age > newFilters.ageRange[1])) {
-        return false
+      if (
+        user.age &&
+        (user.age < newFilters.ageRange[0] || user.age > newFilters.ageRange[1])
+      ) {
+        return false;
       }
 
       // Gender filter
-      if (newFilters.genders.length > 0 && user.gender && !newFilters.genders.includes(user.gender)) {
-        return false
+      if (
+        newFilters.genders.length > 0 &&
+        user.gender &&
+        !newFilters.genders.includes(user.gender)
+      ) {
+        return false;
       }
 
       // Orientation filter
@@ -67,55 +79,57 @@ export function DiscoveryContent({ currentUser: user, users }: DiscoveryContentP
         user.orientation &&
         !newFilters.orientations.includes(user.orientation)
       ) {
-        return false
+        return false;
       }
 
       // Interests filter
       if (newFilters.interests.length > 0) {
-        const hasMatchingInterest = newFilters.interests.some((interest) => user.interests.includes(interest))
+        const hasMatchingInterest = newFilters.interests.some((interest) =>
+          user.interests.includes(interest)
+        );
         if (!hasMatchingInterest) {
-          return false
+          return false;
         }
       }
 
-      return true
-    })
+      return true;
+    });
 
-    setFilteredUsers(filtered)
-  }
+    setFilteredUsers(filtered);
+  };
 
   const handleUnlockGallery = async () => {
     if (selectedUser) {
       try {
-        const response = await fetch('/api/user/unlock-gallery', {
-          method: 'POST',
+        const response = await fetch("/api/user/unlock-gallery", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({ targetUserId: selectedUser.id }),
-        })
+        });
 
         if (response.ok) {
           // Refresh user data to show unlocked gallery
-          window.location.reload()
+          window.location.reload();
         } else {
           // Redirect to subscription page
-          window.location.href = '/subscription'
+          window.location.href = "/subscription";
         }
       } catch (error) {
-        console.error('Gallery unlock failed:', error)
+        console.error("Gallery unlock failed:", error);
       }
     }
-  }
+  };
 
   const handleVideoCall = async () => {
     if (currentUserSubscription === "FREE") {
-      window.location.href = '/subscription'
-      return
+      window.location.href = "/subscription";
+      return;
     }
     // Implement video call logic here
-    console.log('Starting video call...')
-  }
+    console.log("Starting video call...");
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-card to-background">
@@ -166,12 +180,20 @@ export function DiscoveryContent({ currentUser: user, users }: DiscoveryContentP
         {/* Filter Panel */}
         {showFilters && (
           <Card className="mb-6">
-            <FilterPanel filters={filters} onFiltersChange={applyFilters} onClose={() => setShowFilters(false)} />
+            <FilterPanel
+              filters={filters}
+              onFiltersChange={applyFilters}
+              onClose={() => setShowFilters(false)}
+            />
           </Card>
         )}
 
         {/* View Mode Tabs */}
-        <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as "swipe" | "grid")} className="mb-6">
+        <Tabs
+          value={viewMode}
+          onValueChange={(value) => setViewMode(value as "swipe" | "grid")}
+          className="mb-6"
+        >
           <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
             <TabsTrigger value="swipe" className="flex items-center space-x-2">
               <Heart className="h-4 w-4" />
@@ -212,5 +234,5 @@ export function DiscoveryContent({ currentUser: user, users }: DiscoveryContentP
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,16 +1,16 @@
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
-import { getServerSession } from "next-auth"
-import { redirect } from "next/navigation"
-import { authOptions } from "@/lib/auth"
-import { prisma } from "@/lib/prisma"
-import { DiscoveryContent } from "@/components/discovery/discovery-content"
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { DiscoveryContent } from "@/components/discovery/discovery-content";
 
 export default async function DiscoverPage() {
-  const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions);
 
   if (!session) {
-    redirect("/auth/signin")
+    redirect("/auth/signin");
   }
 
   const currentUser = await prisma.user.findUnique({
@@ -22,16 +22,16 @@ export default async function DiscoverPage() {
       sentLikes: true,
       blocks: true,
     },
-  })
+  });
 
   if (!currentUser) {
-    redirect("/auth/signin")
+    redirect("/auth/signin");
   }
 
   // Get users to discover (excluding current user, already liked, and blocked users)
-  const likedUserIds = currentUser.sentLikes.map((like) => like.receiverId)
-  const blockedUserIds = currentUser.blocks.map((block) => block.blockedId)
-  const excludedIds = [currentUser.id, ...likedUserIds, ...blockedUserIds]
+  const likedUserIds = currentUser.sentLikes.map((like) => like.receiverId);
+  const blockedUserIds = currentUser.blocks.map((block) => block.blockedId);
+  const excludedIds = [currentUser.id, ...likedUserIds, ...blockedUserIds];
 
   const discoveryUsers = await prisma.user.findMany({
     where: {
@@ -46,7 +46,7 @@ export default async function DiscoverPage() {
       },
     },
     take: 50,
-  })
+  });
 
-  return <DiscoveryContent currentUser={currentUser} users={discoveryUsers} />
+  return <DiscoveryContent currentUser={currentUser} users={discoveryUsers} />;
 }

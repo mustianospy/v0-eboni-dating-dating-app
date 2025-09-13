@@ -3,7 +3,8 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
-  const rows: Array<{ id: string; email: string }> = await prisma.$queryRawUnsafe(`
+  const rows: Array<{ id: string; email: string }> =
+    await prisma.$queryRawUnsafe(`
     SELECT id, email FROM auth.users
   `);
 

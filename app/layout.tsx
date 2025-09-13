@@ -1,25 +1,25 @@
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
-import type { Metadata } from "next"
-import { Montserrat, Open_Sans } from "next/font/google"
-import { SkipLink } from "@/components/ui/skip-link"
-import { ThemeProvider } from "@/components/theme-provider"
-import { Toaster } from "sonner"
-import "./globals.css"
+import type { Metadata } from "next";
+import { Montserrat, Open_Sans } from "next/font/google";
+import { SkipLink } from "@/components/ui/skip-link";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "sonner";
+import "./globals.css";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-montserrat",
   weight: ["400", "600", "700", "900"],
-})
+});
 
 const openSans = Open_Sans({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-open-sans",
   weight: ["400", "500", "600", "700"],
-})
+});
 
 export const metadata: Metadata = {
   title: "EboniDating - Connect & Find Love",
@@ -33,16 +33,17 @@ export const metadata: Metadata = {
   authors: [{ name: "EboniDating Team" }],
   openGraph: {
     title: "EboniDating - LGBTQ+ Dating Community",
-    description: "Connect with your community. Find love, friendship, and meaningful connections.",
+    description:
+      "Connect with your community. Find love, friendship, and meaningful connections.",
     type: "website",
     locale: "en_US",
   },
-}
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="en" className={`${montserrat.variable} ${openSans.variable}`}>
@@ -59,5 +60,5 @@ export default function RootLayout({
         </ThemeProvider>
       </body>
     </html>
-  )
+  );
 }

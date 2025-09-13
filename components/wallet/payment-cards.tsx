@@ -1,28 +1,47 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Badge } from "@/components/ui/badge"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { CreditCard, Plus, Trash2, Shield, Eye, EyeOff } from "lucide-react"
-import { loadStripe } from "@stripe/stripe-js"
+import { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { CreditCard, Plus, Trash2, Shield, Eye, EyeOff } from "lucide-react";
+import { loadStripe } from "@stripe/stripe-js";
 
 interface PaymentCard {
-  id: string
-  last4: string
-  brand: string
-  expiryMonth: number
-  expiryYear: number
-  isDefault: boolean
-  holderName: string
+  id: string;
+  last4: string;
+  brand: string;
+  expiryMonth: number;
+  expiryYear: number;
+  isDefault: boolean;
+  holderName: string;
 }
 
 interface PaymentCardsProps {
-  userId: string
+  userId: string;
 }
 
 export function PaymentCards({ userId }: PaymentCardsProps) {
@@ -34,134 +53,143 @@ export function PaymentCards({ userId }: PaymentCardsProps) {
       expiryMonth: 12,
       expiryYear: 2025,
       isDefault: true,
-      holderName: "John Doe"
-    }
-  ])
-  
-  const [isLoading, setIsLoading] = useState(false)
-  const [showForm, setShowForm] = useState(false)
-  const [showCardNumbers, setShowCardNumbers] = useState<Record<string, boolean>>({})
-  
+      holderName: "John Doe",
+    },
+  ]);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [showCardNumbers, setShowCardNumbers] = useState<
+    Record<string, boolean>
+  >({});
+
   // Form states
-  const [cardNumber, setCardNumber] = useState("")
-  const [expiryDate, setExpiryDate] = useState("")
-  const [cvv, setCvv] = useState("")
-  const [holderName, setHolderName] = useState("")
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiryDate, setExpiryDate] = useState("");
+  const [cvv, setCvv] = useState("");
+  const [holderName, setHolderName] = useState("");
 
   const formatCardNumber = (value: string) => {
-    const cleaned = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '')
-    const matches = cleaned.match(/\d{4,16}/g)
-    const match = matches && matches[0] || ''
-    const parts = []
-    
+    const cleaned = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
+    const matches = cleaned.match(/\d{4,16}/g);
+    const match = (matches && matches[0]) || "";
+    const parts = [];
+
     for (let i = 0, len = match.length; i < len; i += 4) {
-      parts.push(match.substring(i, i + 4))
+      parts.push(match.substring(i, i + 4));
     }
-    
+
     if (parts.length) {
-      return parts.join(' ')
+      return parts.join(" ");
     } else {
-      return cleaned
+      return cleaned;
     }
-  }
+  };
 
   const formatExpiryDate = (value: string) => {
-    const cleaned = value.replace(/\D/g, '')
+    const cleaned = value.replace(/\D/g, "");
     if (cleaned.length >= 2) {
-      return cleaned.substring(0, 2) + '/' + cleaned.substring(2, 4)
+      return cleaned.substring(0, 2) + "/" + cleaned.substring(2, 4);
     }
-    return cleaned
-  }
+    return cleaned;
+  };
 
   const getBrandIcon = (brand: string) => {
     switch (brand.toLowerCase()) {
-      case 'visa':
-        return '💳'
-      case 'mastercard':
-        return '💳'
-      case 'amex':
-        return '💳'
+      case "visa":
+        return "💳";
+      case "mastercard":
+        return "💳";
+      case "amex":
+        return "💳";
       default:
-        return '💳'
+        return "💳";
     }
-  }
+  };
 
   const handleAddCard = async () => {
     if (!cardNumber || !expiryDate || !cvv || !holderName) {
-      return
+      return;
     }
 
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
-      if (!stripe) throw new Error("Stripe failed to load")
+      const stripe = await loadStripe(
+        process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+      );
+      if (!stripe) throw new Error("Stripe failed to load");
 
       // In a real app, you'd create a setup intent and save the payment method
-      const response = await fetch('/api/user/payment-cards', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/user/payment-cards", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          cardNumber: cardNumber.replace(/\s/g, ''),
+          cardNumber: cardNumber.replace(/\s/g, ""),
           expiryDate,
           cvv,
           holderName,
-          userId
-        })
-      })
+          userId,
+        }),
+      });
 
       if (response.ok) {
-        const newCard = await response.json()
-        setCards(prev => [...prev, newCard])
-        setShowForm(false)
-        setCardNumber("")
-        setExpiryDate("")
-        setCvv("")
-        setHolderName("")
+        const newCard = await response.json();
+        setCards((prev) => [...prev, newCard]);
+        setShowForm(false);
+        setCardNumber("");
+        setExpiryDate("");
+        setCvv("");
+        setHolderName("");
       }
     } catch (error) {
-      console.error('Error adding card:', error)
+      console.error("Error adding card:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleDeleteCard = async (cardId: string) => {
     try {
       const response = await fetch(`/api/user/payment-cards/${cardId}`, {
-        method: 'DELETE'
-      })
+        method: "DELETE",
+      });
 
       if (response.ok) {
-        setCards(prev => prev.filter(card => card.id !== cardId))
+        setCards((prev) => prev.filter((card) => card.id !== cardId));
       }
     } catch (error) {
-      console.error('Error deleting card:', error)
+      console.error("Error deleting card:", error);
     }
-  }
+  };
 
   const handleSetDefault = async (cardId: string) => {
     try {
-      const response = await fetch(`/api/user/payment-cards/${cardId}/default`, {
-        method: 'PATCH'
-      })
+      const response = await fetch(
+        `/api/user/payment-cards/${cardId}/default`,
+        {
+          method: "PATCH",
+        }
+      );
 
       if (response.ok) {
-        setCards(prev => prev.map(card => ({
-          ...card,
-          isDefault: card.id === cardId
-        })))
+        setCards((prev) =>
+          prev.map((card) => ({
+            ...card,
+            isDefault: card.id === cardId,
+          }))
+        );
       }
     } catch (error) {
-      console.error('Error setting default card:', error)
+      console.error("Error setting default card:", error);
     }
-  }
+  };
 
   const toggleShowCardNumber = (cardId: string) => {
-    setShowCardNumbers(prev => ({
+    setShowCardNumbers((prev) => ({
       ...prev,
-      [cardId]: !prev[cardId]
-    }))
-  }
+      [cardId]: !prev[cardId],
+    }));
+  };
 
   return (
     <Card>
@@ -178,21 +206,25 @@ export function PaymentCards({ userId }: PaymentCardsProps) {
         {cards.length === 0 ? (
           <div className="text-center py-8">
             <CreditCard className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <p className="text-muted-foreground mb-4">No payment cards added yet</p>
+            <p className="text-muted-foreground mb-4">
+              No payment cards added yet
+            </p>
           </div>
         ) : (
           <div className="space-y-3">
             {cards.map((card) => (
-              <div key={card.id} className="flex items-center justify-between p-4 border rounded-lg">
+              <div
+                key={card.id}
+                className="flex items-center justify-between p-4 border rounded-lg"
+              >
                 <div className="flex items-center gap-3">
                   <span className="text-2xl">{getBrandIcon(card.brand)}</span>
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="font-medium">
-                        {showCardNumbers[card.id] 
+                        {showCardNumbers[card.id]
                           ? `**** **** **** ${card.last4}`
-                          : `•••• •••• •••• ${card.last4}`
-                        }
+                          : `•••• •••• •••• ${card.last4}`}
                       </span>
                       <Button
                         variant="ghost"
@@ -210,14 +242,19 @@ export function PaymentCards({ userId }: PaymentCardsProps) {
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <span>{card.holderName}</span>
                       <span>•</span>
-                      <span>{String(card.expiryMonth).padStart(2, '0')}/{card.expiryYear}</span>
+                      <span>
+                        {String(card.expiryMonth).padStart(2, "0")}/
+                        {card.expiryYear}
+                      </span>
                       {card.isDefault && (
-                        <Badge variant="secondary" className="text-xs">Default</Badge>
+                        <Badge variant="secondary" className="text-xs">
+                          Default
+                        </Badge>
                       )}
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   {!card.isDefault && (
                     <Button
@@ -256,7 +293,7 @@ export function PaymentCards({ userId }: PaymentCardsProps) {
                 Add a new payment card to your account
               </DialogDescription>
             </DialogHeader>
-            
+
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="cardNumber">Card Number</Label>
@@ -264,11 +301,13 @@ export function PaymentCards({ userId }: PaymentCardsProps) {
                   id="cardNumber"
                   placeholder="1234 5678 9012 3456"
                   value={cardNumber}
-                  onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
+                  onChange={(e) =>
+                    setCardNumber(formatCardNumber(e.target.value))
+                  }
                   maxLength={19}
                 />
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="expiryDate">Expiry Date</Label>
@@ -276,7 +315,9 @@ export function PaymentCards({ userId }: PaymentCardsProps) {
                     id="expiryDate"
                     placeholder="MM/YY"
                     value={expiryDate}
-                    onChange={(e) => setExpiryDate(formatExpiryDate(e.target.value))}
+                    onChange={(e) =>
+                      setExpiryDate(formatExpiryDate(e.target.value))
+                    }
                     maxLength={5}
                   />
                 </div>
@@ -286,12 +327,14 @@ export function PaymentCards({ userId }: PaymentCardsProps) {
                     id="cvv"
                     placeholder="123"
                     value={cvv}
-                    onChange={(e) => setCvv(e.target.value.replace(/\D/g, '').substring(0, 4))}
+                    onChange={(e) =>
+                      setCvv(e.target.value.replace(/\D/g, "").substring(0, 4))
+                    }
                     maxLength={4}
                   />
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="holderName">Cardholder Name</Label>
                 <Input
@@ -301,22 +344,22 @@ export function PaymentCards({ userId }: PaymentCardsProps) {
                   onChange={(e) => setHolderName(e.target.value)}
                 />
               </div>
-              
+
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Shield className="h-4 w-4" />
                 <span>Your card details are encrypted and secure</span>
               </div>
-              
+
               <div className="flex gap-2">
-                <Button 
-                  onClick={handleAddCard} 
+                <Button
+                  onClick={handleAddCard}
                   disabled={isLoading}
                   className="flex-1"
                 >
                   {isLoading ? "Adding..." : "Add Card"}
                 </Button>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={() => setShowForm(false)}
                   className="flex-1"
                 >
@@ -328,5 +371,5 @@ export function PaymentCards({ userId }: PaymentCardsProps) {
         </Dialog>
       </CardContent>
     </Card>
-  )
+  );
 }

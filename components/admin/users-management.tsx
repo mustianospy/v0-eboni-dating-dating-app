@@ -1,29 +1,54 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Search, MoreHorizontal, UserCheck, UserX, Ban, Eye } from "lucide-react"
+import { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Search,
+  MoreHorizontal,
+  UserCheck,
+  UserX,
+  Ban,
+  Eye,
+} from "lucide-react";
 
 interface User {
-  id: string
-  name: string
-  email: string
-  avatar: string
-  status: "active" | "suspended" | "banned"
-  subscription: "free" | "plus" | "pro" | "ultra"
-  verified: boolean
-  joinedAt: string
-  lastActive: string
+  id: string;
+  name: string;
+  email: string;
+  avatar: string;
+  status: "active" | "suspended" | "banned";
+  subscription: "free" | "plus" | "pro" | "ultra";
+  verified: boolean;
+  joinedAt: string;
+  lastActive: string;
 }
 
 export function UsersManagement() {
-  const [searchTerm, setSearchTerm] = useState("")
+  const [searchTerm, setSearchTerm] = useState("");
   const [users] = useState<User[]>([
     {
       id: "1",
@@ -58,18 +83,20 @@ export function UsersManagement() {
       joinedAt: "2024-01-20",
       lastActive: "2024-01-28",
     },
-  ])
+  ]);
 
   const getStatusBadge = (status: User["status"]) => {
     switch (status) {
       case "active":
-        return <Badge className="bg-green-100 text-green-800">Active</Badge>
+        return <Badge className="bg-green-100 text-green-800">Active</Badge>;
       case "suspended":
-        return <Badge className="bg-yellow-100 text-yellow-800">Suspended</Badge>
+        return (
+          <Badge className="bg-yellow-100 text-yellow-800">Suspended</Badge>;
+        );
       case "banned":
-        return <Badge className="bg-red-100 text-red-800">Banned</Badge>
+        return <Badge className="bg-red-100 text-red-800">Banned</Badge>;
     }
-  }
+  };
 
   const getSubscriptionBadge = (subscription: User["subscription"]) => {
     const colors = {
@@ -77,24 +104,28 @@ export function UsersManagement() {
       plus: "bg-blue-100 text-blue-800",
       pro: "bg-purple-100 text-purple-800",
       ultra: "bg-gradient-to-r from-purple-500 to-pink-500 text-white",
-    }
+    };
 
     return (
-      <Badge className={colors[subscription]}>{subscription.charAt(0).toUpperCase() + subscription.slice(1)}</Badge>
-    )
-  }
+      <Badge className={colors[subscription]}>
+        {subscription.charAt(0).toUpperCase() + subscription.slice(1)}
+      </Badge>
+    );
+  };
 
   const filteredUsers = users.filter(
     (user) =>
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
+      user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>User Management</CardTitle>
-        <CardDescription>Manage user accounts, subscriptions, and verification status</CardDescription>
+        <CardDescription>
+          Manage user accounts, subscriptions, and verification status
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex items-center gap-4 mb-6">
@@ -128,7 +159,10 @@ export function UsersManagement() {
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <Avatar className="h-8 w-8">
-                        <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.name} />
+                        <AvatarImage
+                          src={user.avatar || "/placeholder.svg"}
+                          alt={user.name}
+                        />
                         <AvatarFallback>
                           {user.name
                             .split(" ")
@@ -138,12 +172,16 @@ export function UsersManagement() {
                       </Avatar>
                       <div>
                         <div className="font-medium">{user.name}</div>
-                        <div className="text-sm text-muted-foreground">{user.email}</div>
+                        <div className="text-sm text-muted-foreground">
+                          {user.email}
+                        </div>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>{getStatusBadge(user.status)}</TableCell>
-                  <TableCell>{getSubscriptionBadge(user.subscription)}</TableCell>
+                  <TableCell>
+                    {getSubscriptionBadge(user.subscription)}
+                  </TableCell>
                   <TableCell>
                     {user.verified ? (
                       <UserCheck className="h-4 w-4 text-green-600" />
@@ -151,8 +189,12 @@ export function UsersManagement() {
                       <UserX className="h-4 w-4 text-gray-400" />
                     )}
                   </TableCell>
-                  <TableCell>{new Date(user.joinedAt).toLocaleDateString()}</TableCell>
-                  <TableCell>{new Date(user.lastActive).toLocaleDateString()}</TableCell>
+                  <TableCell>
+                    {new Date(user.joinedAt).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>
+                    {new Date(user.lastActive).toLocaleDateString()}
+                  </TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -187,5 +229,5 @@ export function UsersManagement() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

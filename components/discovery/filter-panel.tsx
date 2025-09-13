@@ -1,24 +1,24 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Slider } from "@/components/ui/slider"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Badge } from "@/components/ui/badge"
-import { X } from "lucide-react"
+import { useState } from "react";
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
+import { X } from "lucide-react";
 
 interface FilterPanelProps {
   filters: {
-    ageRange: number[]
-    maxDistance: number
-    genders: string[]
-    orientations: string[]
-    interests: string[]
-  }
-  onFiltersChange: (filters: any) => void
-  onClose: () => void
+    ageRange: number[];
+    maxDistance: number;
+    genders: string[];
+    orientations: string[];
+    interests: string[];
+  };
+  onFiltersChange: (filters: any) => void;
+  onClose: () => void;
 }
 
 const GENDERS = [
@@ -30,7 +30,7 @@ const GENDERS = [
   "Genderfluid",
   "Agender",
   "Other",
-]
+];
 
 const ORIENTATIONS = [
   "Gay",
@@ -42,7 +42,7 @@ const ORIENTATIONS = [
   "Queer",
   "Questioning",
   "Other",
-]
+];
 
 const INTERESTS = [
   "Art",
@@ -69,34 +69,40 @@ const INTERESTS = [
   "Wine",
   "Meditation",
   "Gardening",
-]
+];
 
-export function FilterPanel({ filters, onFiltersChange, onClose }: FilterPanelProps) {
-  const [localFilters, setLocalFilters] = useState(filters)
+export function FilterPanel({
+  filters,
+  onFiltersChange,
+  onClose,
+}: FilterPanelProps) {
+  const [localFilters, setLocalFilters] = useState(filters);
 
   const handleGenderChange = (gender: string, checked: boolean) => {
-    const updated = checked ? [...localFilters.genders, gender] : localFilters.genders.filter((g) => g !== gender)
-    setLocalFilters({ ...localFilters, genders: updated })
-  }
+    const updated = checked
+      ? [...localFilters.genders, gender]
+      : localFilters.genders.filter((g) => g !== gender);
+    setLocalFilters({ ...localFilters, genders: updated });
+  };
 
   const handleOrientationChange = (orientation: string, checked: boolean) => {
     const updated = checked
       ? [...localFilters.orientations, orientation]
-      : localFilters.orientations.filter((o) => o !== orientation)
-    setLocalFilters({ ...localFilters, orientations: updated })
-  }
+      : localFilters.orientations.filter((o) => o !== orientation);
+    setLocalFilters({ ...localFilters, orientations: updated });
+  };
 
   const handleInterestChange = (interest: string, checked: boolean) => {
     const updated = checked
       ? [...localFilters.interests, interest]
-      : localFilters.interests.filter((i) => i !== interest)
-    setLocalFilters({ ...localFilters, interests: updated })
-  }
+      : localFilters.interests.filter((i) => i !== interest);
+    setLocalFilters({ ...localFilters, interests: updated });
+  };
 
   const applyFilters = () => {
-    onFiltersChange(localFilters)
-    onClose()
-  }
+    onFiltersChange(localFilters);
+    onClose();
+  };
 
   const clearFilters = () => {
     const clearedFilters = {
@@ -105,10 +111,10 @@ export function FilterPanel({ filters, onFiltersChange, onClose }: FilterPanelPr
       genders: [],
       orientations: [],
       interests: [],
-    }
-    setLocalFilters(clearedFilters)
-    onFiltersChange(clearedFilters)
-  }
+    };
+    setLocalFilters(clearedFilters);
+    onFiltersChange(clearedFilters);
+  };
 
   return (
     <>
@@ -126,7 +132,9 @@ export function FilterPanel({ filters, onFiltersChange, onClose }: FilterPanelPr
           </Label>
           <Slider
             value={localFilters.ageRange}
-            onValueChange={(value) => setLocalFilters({ ...localFilters, ageRange: value })}
+            onValueChange={(value) =>
+              setLocalFilters({ ...localFilters, ageRange: value })
+            }
             min={18}
             max={65}
             step={1}
@@ -139,7 +147,9 @@ export function FilterPanel({ filters, onFiltersChange, onClose }: FilterPanelPr
           <Label>Maximum Distance: {localFilters.maxDistance} miles</Label>
           <Slider
             value={[localFilters.maxDistance]}
-            onValueChange={(value) => setLocalFilters({ ...localFilters, maxDistance: value[0] })}
+            onValueChange={(value) =>
+              setLocalFilters({ ...localFilters, maxDistance: value[0] })
+            }
             min={1}
             max={100}
             step={1}
@@ -156,7 +166,9 @@ export function FilterPanel({ filters, onFiltersChange, onClose }: FilterPanelPr
                 <Checkbox
                   id={`gender-${gender}`}
                   checked={localFilters.genders.includes(gender)}
-                  onCheckedChange={(checked) => handleGenderChange(gender, checked as boolean)}
+                  onCheckedChange={(checked) =>
+                    handleGenderChange(gender, checked as boolean)
+                  }
                 />
                 <Label htmlFor={`gender-${gender}`} className="text-sm">
                   {gender}
@@ -175,9 +187,14 @@ export function FilterPanel({ filters, onFiltersChange, onClose }: FilterPanelPr
                 <Checkbox
                   id={`orientation-${orientation}`}
                   checked={localFilters.orientations.includes(orientation)}
-                  onCheckedChange={(checked) => handleOrientationChange(orientation, checked as boolean)}
+                  onCheckedChange={(checked) =>
+                    handleOrientationChange(orientation, checked as boolean)
+                  }
                 />
-                <Label htmlFor={`orientation-${orientation}`} className="text-sm">
+                <Label
+                  htmlFor={`orientation-${orientation}`}
+                  className="text-sm"
+                >
                   {orientation}
                 </Label>
               </div>
@@ -192,9 +209,18 @@ export function FilterPanel({ filters, onFiltersChange, onClose }: FilterPanelPr
             {INTERESTS.map((interest) => (
               <Button
                 key={interest}
-                variant={localFilters.interests.includes(interest) ? "default" : "outline"}
+                variant={
+                  localFilters.interests.includes(interest)
+                    ? "default"
+                    : "outline"
+                }
                 size="sm"
-                onClick={() => handleInterestChange(interest, !localFilters.interests.includes(interest))}
+                onClick={() =>
+                  handleInterestChange(
+                    interest,
+                    !localFilters.interests.includes(interest)
+                  )
+                }
                 className="rounded-full text-xs"
               >
                 {interest}
@@ -208,7 +234,9 @@ export function FilterPanel({ filters, onFiltersChange, onClose }: FilterPanelPr
           localFilters.orientations.length > 0 ||
           localFilters.interests.length > 0) && (
           <div className="space-y-2">
-            <Label className="text-sm text-muted-foreground">Active Filters:</Label>
+            <Label className="text-sm text-muted-foreground">
+              Active Filters:
+            </Label>
             <div className="flex flex-wrap gap-1">
               {localFilters.genders.map((gender) => (
                 <Badge key={gender} variant="secondary" className="text-xs">
@@ -216,7 +244,11 @@ export function FilterPanel({ filters, onFiltersChange, onClose }: FilterPanelPr
                 </Badge>
               ))}
               {localFilters.orientations.map((orientation) => (
-                <Badge key={orientation} variant="secondary" className="text-xs">
+                <Badge
+                  key={orientation}
+                  variant="secondary"
+                  className="text-xs"
+                >
                   {orientation}
                 </Badge>
               ))}
@@ -236,7 +268,11 @@ export function FilterPanel({ filters, onFiltersChange, onClose }: FilterPanelPr
 
         {/* Action buttons */}
         <div className="flex space-x-3 pt-4">
-          <Button onClick={clearFilters} variant="outline" className="flex-1 bg-transparent">
+          <Button
+            onClick={clearFilters}
+            variant="outline"
+            className="flex-1 bg-transparent"
+          >
             Clear All
           </Button>
           <Button onClick={applyFilters} className="flex-1">
@@ -245,5 +281,5 @@ export function FilterPanel({ filters, onFiltersChange, onClose }: FilterPanelPr
         </div>
       </CardContent>
     </>
-  )
+  );
 }

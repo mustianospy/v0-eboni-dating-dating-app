@@ -1,30 +1,30 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 
 export function CheckoutButton({ priceId }: { priceId: string }) {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   async function handleCheckout() {
-    setLoading(true)
+    setLoading(true);
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ priceId }),
-      })
+      });
 
-      const data = await res.json()
+      const data = await res.json();
       if (data.url) {
-        window.location.href = data.url
+        window.location.href = data.url;
       } else {
-        alert(data.message || "Payment unavailable.")
+        alert(data.message || "Payment unavailable.");
       }
     } catch (err) {
-      console.error(err)
-      alert("Checkout failed.")
+      console.error(err);
+      alert("Checkout failed.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -36,5 +36,5 @@ export function CheckoutButton({ priceId }: { priceId: string }) {
     >
       {loading ? "Processing..." : "Upgrade / Top Up"}
     </button>
-  )
+  );
 }

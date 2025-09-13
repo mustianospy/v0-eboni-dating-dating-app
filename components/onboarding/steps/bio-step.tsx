@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 interface BioStepProps {
   formData: {
-    bio: string
-  }
-  updateFormData: (data: any) => void
+    bio: string;
+  };
+  updateFormData: (data: any) => void;
 }
 
 export function BioStep({ formData, updateFormData }: BioStepProps) {
-  const maxLength = 500
+  const maxLength = 500;
 
   return (
     <div className="space-y-6">
@@ -20,7 +20,8 @@ export function BioStep({ formData, updateFormData }: BioStepProps) {
           Tell Us About Yourself
         </Label>
         <p className="text-sm text-muted-foreground mt-1">
-          Write a brief bio that showcases your personality and what you're looking for.
+          Write a brief bio that showcases your personality and what you're
+          looking for.
         </p>
       </div>
 
@@ -51,5 +52,5 @@ export function BioStep({ formData, updateFormData }: BioStepProps) {
         </ul>
       </div>
     </div>
-  )
+  );
 }

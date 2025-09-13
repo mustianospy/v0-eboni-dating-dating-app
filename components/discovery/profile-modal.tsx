@@ -1,70 +1,79 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Heart, X, Star, MapPin, ChevronLeft, ChevronRight } from "lucide-react"
+import { useState } from "react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Heart,
+  X,
+  Star,
+  MapPin,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 
 interface User {
-  id: string
-  name: string | null
-  bio: string | null
-  age: number | null
-  location: string | null
-  gender: string | null
-  orientation: string | null
-  interests: string[]
-  subscriptionTier: string
+  id: string;
+  name: string | null;
+  bio: string | null;
+  age: number | null;
+  location: string | null;
+  gender: string | null;
+  orientation: string | null;
+  interests: string[];
+  subscriptionTier: string;
   photos: Array<{
-    id: string
-    url: string
-    isPrimary: boolean
-  }>
+    id: string;
+    url: string;
+    isPrimary: boolean;
+  }>;
   privatePhotos?: Array<{
-    id: string
-    url: string
-  }>
+    id: string;
+    url: string;
+  }>;
 }
 
 interface ProfileModalProps {
-  user: User
-  currentUserSubscription?: string
-  onClose: () => void
-  onLike: () => void
-  onPass: () => void
-  onSuperLike: () => void
-  onUnlockGallery?: () => void
-  onVideoCall?: () => void
+  user: User;
+  currentUserSubscription?: string;
+  onClose: () => void;
+  onLike: () => void;
+  onPass: () => void;
+  onSuperLike: () => void;
+  onUnlockGallery?: () => void;
+  onVideoCall?: () => void;
 }
 
-export function ProfileModal({ 
-  user, 
+export function ProfileModal({
+  user,
   currentUserSubscription = "FREE",
-  onClose, 
-  onLike, 
-  onPass, 
+  onClose,
+  onLike,
+  onPass,
   onSuperLike,
   onUnlockGallery,
-  onVideoCall
+  onVideoCall,
 }: ProfileModalProps) {
-  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0)
-  const [showGalleryUnlock, setShowGalleryUnlock] = useState(false)
-  
-  const hasSubscription = currentUserSubscription !== "FREE"
-  const canViewGallery = hasSubscription || user.subscriptionTier === "FREE"
-  const canMakeVideoCall = hasSubscription
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+  const [showGalleryUnlock, setShowGalleryUnlock] = useState(false);
+
+  const hasSubscription = currentUserSubscription !== "FREE";
+  const canViewGallery = hasSubscription || user.subscriptionTier === "FREE";
+  const canMakeVideoCall = hasSubscription;
 
   const nextPhoto = () => {
-    setCurrentPhotoIndex((prev) => (prev + 1) % user.photos.length)
-  }
+    setCurrentPhotoIndex((prev) => (prev + 1) % user.photos.length);
+  };
 
   const prevPhoto = () => {
-    setCurrentPhotoIndex((prev) => (prev - 1 + user.photos.length) % user.photos.length)
-  }
+    setCurrentPhotoIndex(
+      (prev) => (prev - 1 + user.photos.length) % user.photos.length
+    );
+  };
 
-  const currentPhoto = user.photos[currentPhotoIndex] || user.photos[0]
+  const currentPhoto = user.photos[currentPhotoIndex] || user.photos[0];
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
@@ -73,7 +82,10 @@ export function ProfileModal({
           {/* Photo carousel */}
           <div className="relative aspect-[3/4]">
             <img
-              src={currentPhoto?.url || "/placeholder.svg?height=600&width=450&query=profile photo"}
+              src={
+                currentPhoto?.url ||
+                "/placeholder.svg?height=600&width=450&query=profile photo"
+              }
               alt={`${user.name}'s photo ${currentPhotoIndex + 1}`}
               className="w-full h-full object-cover"
             />
@@ -129,11 +141,15 @@ export function ProfileModal({
 
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
-                  <h4 className="font-medium text-sm text-muted-foreground mb-1">Gender</h4>
+                  <h4 className="font-medium text-sm text-muted-foreground mb-1">
+                    Gender
+                  </h4>
                   <Badge variant="secondary">{user.gender}</Badge>
                 </div>
                 <div>
-                  <h4 className="font-medium text-sm text-muted-foreground mb-1">Orientation</h4>
+                  <h4 className="font-medium text-sm text-muted-foreground mb-1">
+                    Orientation
+                  </h4>
                   <Badge variant="secondary">{user.orientation}</Badge>
                 </div>
               </div>
@@ -141,7 +157,9 @@ export function ProfileModal({
               {user.bio && (
                 <div className="mb-4">
                   <h4 className="font-medium mb-2">About</h4>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{user.bio}</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {user.bio}
+                  </p>
                 </div>
               )}
 
@@ -150,7 +168,11 @@ export function ProfileModal({
                   <h4 className="font-medium mb-2">Interests</h4>
                   <div className="flex flex-wrap gap-2">
                     {user.interests.map((interest) => (
-                      <Badge key={interest} variant="outline" className="text-xs">
+                      <Badge
+                        key={interest}
+                        variant="outline"
+                        className="text-xs"
+                      >
                         {interest}
                       </Badge>
                     ))}
@@ -161,19 +183,22 @@ export function ProfileModal({
           </ScrollArea>
 
           {/* Gallery unlock section */}
-          {!canViewGallery && user.privatePhotos && user.privatePhotos.length > 0 && (
-            <div className="p-6 border-t bg-muted/50">
-              <div className="text-center">
-                <h4 className="font-medium mb-2">Private Gallery</h4>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Subscribe to unlock {user.privatePhotos.length} private photos
-                </p>
-                <Button onClick={onUnlockGallery} className="w-full">
-                  Unlock Gallery
-                </Button>
+          {!canViewGallery &&
+            user.privatePhotos &&
+            user.privatePhotos.length > 0 && (
+              <div className="p-6 border-t bg-muted/50">
+                <div className="text-center">
+                  <h4 className="font-medium mb-2">Private Gallery</h4>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Subscribe to unlock {user.privatePhotos.length} private
+                    photos
+                  </p>
+                  <Button onClick={onUnlockGallery} className="w-full">
+                    Unlock Gallery
+                  </Button>
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
           {/* Video call section */}
           {!canMakeVideoCall && (
@@ -183,7 +208,11 @@ export function ProfileModal({
                 <p className="text-sm text-muted-foreground mb-4">
                   Subscribe to enable video calls
                 </p>
-                <Button onClick={() => window.location.href = '/subscription'} variant="outline" className="w-full">
+                <Button
+                  onClick={() => (window.location.href = "/subscription")}
+                  variant="outline"
+                  className="w-full"
+                >
                   Upgrade to Call
                 </Button>
               </div>
@@ -197,8 +226,8 @@ export function ProfileModal({
               variant="outline"
               className="rounded-full h-12 w-12 p-0 border-2 hover:bg-destructive hover:text-destructive-foreground hover:border-destructive bg-transparent"
               onClick={() => {
-                onPass()
-                onClose()
+                onPass();
+                onClose();
               }}
             >
               <X className="h-5 w-5" />
@@ -209,8 +238,8 @@ export function ProfileModal({
               variant="outline"
               className="rounded-full h-14 w-14 p-0 border-2 hover:bg-secondary hover:text-secondary-foreground hover:border-secondary bg-transparent"
               onClick={() => {
-                onSuperLike()
-                onClose()
+                onSuperLike();
+                onClose();
               }}
             >
               <Star className="h-6 w-6" />
@@ -220,8 +249,8 @@ export function ProfileModal({
               size="lg"
               className="rounded-full h-12 w-12 p-0 bg-primary hover:bg-primary/90"
               onClick={() => {
-                onLike()
-                onClose()
+                onLike();
+                onClose();
               }}
             >
               <Heart className="h-5 w-5" />
@@ -241,5 +270,5 @@ export function ProfileModal({
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

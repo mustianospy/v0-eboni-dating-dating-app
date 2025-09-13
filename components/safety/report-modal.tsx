@@ -1,18 +1,24 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Label } from "@/components/ui/label"
-import { Flag, AlertTriangle } from "lucide-react"
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Flag, AlertTriangle } from "lucide-react";
 
 interface ReportModalProps {
-  isOpen: boolean
-  onClose: () => void
-  reportedUserId: string
-  reportedUserName: string
+  isOpen: boolean;
+  onClose: () => void;
+  reportedUserId: string;
+  reportedUserName: string;
 }
 
 const reportReasons = [
@@ -22,17 +28,22 @@ const reportReasons = [
   { id: "spam", label: "Spam or promotional content" },
   { id: "underage", label: "Appears to be underage" },
   { id: "other", label: "Other (please specify)" },
-]
+];
 
-export function ReportModal({ isOpen, onClose, reportedUserId, reportedUserName }: ReportModalProps) {
-  const [selectedReason, setSelectedReason] = useState("")
-  const [additionalInfo, setAdditionalInfo] = useState("")
-  const [isSubmitting, setIsSubmitting] = useState(false)
+export function ReportModal({
+  isOpen,
+  onClose,
+  reportedUserId,
+  reportedUserName,
+}: ReportModalProps) {
+  const [selectedReason, setSelectedReason] = useState("");
+  const [additionalInfo, setAdditionalInfo] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async () => {
-    if (!selectedReason) return
+    if (!selectedReason) return;
 
-    setIsSubmitting(true)
+    setIsSubmitting(true);
 
     try {
       const response = await fetch("/api/safety/report", {
@@ -43,18 +54,18 @@ export function ReportModal({ isOpen, onClose, reportedUserId, reportedUserName 
           reason: selectedReason,
           additionalInfo,
         }),
-      })
+      });
 
       if (response.ok) {
-        onClose()
+        onClose();
         // Show success message
       }
     } catch (error) {
-      console.error("Failed to submit report:", error)
+      console.error("Failed to submit report:", error);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -64,7 +75,9 @@ export function ReportModal({ isOpen, onClose, reportedUserId, reportedUserName 
             <Flag className="h-5 w-5 text-destructive" />
             Report {reportedUserName}
           </DialogTitle>
-          <DialogDescription>Help us keep EboniDating safe by reporting inappropriate behavior.</DialogDescription>
+          <DialogDescription>
+            Help us keep EboniDating safe by reporting inappropriate behavior.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
@@ -72,14 +85,19 @@ export function ReportModal({ isOpen, onClose, reportedUserId, reportedUserName 
             <div className="flex items-start gap-2">
               <AlertTriangle className="h-4 w-4 text-yellow-600 mt-0.5" />
               <p className="text-sm text-yellow-800">
-                False reports may result in action against your account. Only report genuine violations.
+                False reports may result in action against your account. Only
+                report genuine violations.
               </p>
             </div>
           </div>
 
           <div>
             <Label className="text-sm font-medium">Reason for reporting</Label>
-            <RadioGroup value={selectedReason} onValueChange={setSelectedReason} className="mt-2">
+            <RadioGroup
+              value={selectedReason}
+              onValueChange={setSelectedReason}
+              className="mt-2"
+            >
               {reportReasons.map((reason) => (
                 <div key={reason.id} className="flex items-center space-x-2">
                   <RadioGroupItem value={reason.id} id={reason.id} />
@@ -106,15 +124,23 @@ export function ReportModal({ isOpen, onClose, reportedUserId, reportedUserName 
           </div>
 
           <div className="flex gap-2 pt-4">
-            <Button variant="outline" onClick={onClose} className="flex-1 bg-transparent">
+            <Button
+              variant="outline"
+              onClick={onClose}
+              className="flex-1 bg-transparent"
+            >
               Cancel
             </Button>
-            <Button onClick={handleSubmit} disabled={!selectedReason || isSubmitting} className="flex-1">
+            <Button
+              onClick={handleSubmit}
+              disabled={!selectedReason || isSubmitting}
+              className="flex-1"
+            >
               {isSubmitting ? "Submitting..." : "Submit Report"}
             </Button>
           </div>
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

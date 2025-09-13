@@ -1,24 +1,27 @@
-import * as React from "react"
-import { cn } from "@/lib/utils"
-import { AlertCircle, CheckCircle } from "lucide-react"
+import * as React from "react";
+import { cn } from "@/lib/utils";
+import { AlertCircle, CheckCircle } from "lucide-react";
 
 export interface InputProps extends React.ComponentProps<"input"> {
-  error?: string
-  success?: boolean
-  helperText?: string
-  label?: string
+  error?: string;
+  success?: boolean;
+  helperText?: string;
+  label?: string;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, error, success, helperText, label, id, ...props }, ref) => {
-    const inputId = id || `input-${React.useId()}`
-    const errorId = `${inputId}-error`
-    const helperId = `${inputId}-helper`
+  (
+    { className, type, error, success, helperText, label, id, ...props },
+    ref
+  ) => {
+    const inputId = id || `input-${React.useId()}`;
+    const errorId = `${inputId}-error`;
+    const helperId = `${inputId}-helper`;
 
     return (
       <div className="space-y-2">
         {label && (
-          <label 
+          <label
             htmlFor={inputId}
             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
@@ -37,11 +40,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
               className
             )}
             ref={ref}
-            aria-invalid={error ? 'true' : 'false'}
-            aria-describedby={cn(
-              error && errorId,
-              helperText && helperId
-            )}
+            aria-invalid={error ? "true" : "false"}
+            aria-describedby={cn(error && errorId, helperText && helperId)}
             {...props}
           />
           {error && (
@@ -62,9 +62,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           </p>
         )}
       </div>
-    )
+    );
   }
-)
-Input.displayName = "Input"
+);
+Input.displayName = "Input";
 
-export { Input }
+export { Input };

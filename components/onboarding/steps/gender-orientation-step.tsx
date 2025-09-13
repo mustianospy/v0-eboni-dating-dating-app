@@ -1,16 +1,22 @@
-"use client"
+"use client";
 
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface GenderOrientationStepProps {
   formData: {
-    gender: string
-    orientation: string
-    lookingFor: string[]
-  }
-  updateFormData: (data: any) => void
+    gender: string;
+    orientation: string;
+    lookingFor: string[];
+  };
+  updateFormData: (data: any) => void;
 }
 
 const GENDERS = [
@@ -22,7 +28,7 @@ const GENDERS = [
   "Genderfluid",
   "Agender",
   "Other",
-]
+];
 
 const ORIENTATIONS = [
   "Gay",
@@ -34,21 +40,29 @@ const ORIENTATIONS = [
   "Queer",
   "Questioning",
   "Other",
-]
+];
 
-const LOOKING_FOR = ["Relationship", "Friends", "Casual Dating", "Networking"]
+const LOOKING_FOR = ["Relationship", "Friends", "Casual Dating", "Networking"];
 
-export function GenderOrientationStep({ formData, updateFormData }: GenderOrientationStepProps) {
+export function GenderOrientationStep({
+  formData,
+  updateFormData,
+}: GenderOrientationStepProps) {
   const handleLookingForChange = (value: string, checked: boolean) => {
-    const updated = checked ? [...formData.lookingFor, value] : formData.lookingFor.filter((item) => item !== value)
-    updateFormData({ lookingFor: updated })
-  }
+    const updated = checked
+      ? [...formData.lookingFor, value]
+      : formData.lookingFor.filter((item) => item !== value);
+    updateFormData({ lookingFor: updated });
+  };
 
   return (
     <div className="space-y-6">
       <div className="space-y-2">
         <Label>Gender Identity</Label>
-        <Select value={formData.gender} onValueChange={(value) => updateFormData({ gender: value })}>
+        <Select
+          value={formData.gender}
+          onValueChange={(value) => updateFormData({ gender: value })}
+        >
           <SelectTrigger>
             <SelectValue placeholder="Select your gender identity" />
           </SelectTrigger>
@@ -64,7 +78,10 @@ export function GenderOrientationStep({ formData, updateFormData }: GenderOrient
 
       <div className="space-y-2">
         <Label>Sexual Orientation</Label>
-        <Select value={formData.orientation} onValueChange={(value) => updateFormData({ orientation: value })}>
+        <Select
+          value={formData.orientation}
+          onValueChange={(value) => updateFormData({ orientation: value })}
+        >
           <SelectTrigger>
             <SelectValue placeholder="Select your orientation" />
           </SelectTrigger>
@@ -86,7 +103,9 @@ export function GenderOrientationStep({ formData, updateFormData }: GenderOrient
               <Checkbox
                 id={option}
                 checked={formData.lookingFor.includes(option)}
-                onCheckedChange={(checked) => handleLookingForChange(option, checked as boolean)}
+                onCheckedChange={(checked) =>
+                  handleLookingForChange(option, checked as boolean)
+                }
               />
               <Label htmlFor={option} className="text-sm">
                 {option}
@@ -96,5 +115,5 @@ export function GenderOrientationStep({ formData, updateFormData }: GenderOrient
         </div>
       </div>
     </div>
-  )
+  );
 }

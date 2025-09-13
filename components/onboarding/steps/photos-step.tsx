@@ -1,50 +1,53 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Upload, X } from "lucide-react"
+import { useState } from "react";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Upload, X } from "lucide-react";
 
 interface PhotosStepProps {
   formData: {
-    photos: string[]
-  }
-  updateFormData: (data: any) => void
+    photos: string[];
+  };
+  updateFormData: (data: any) => void;
 }
 
 export function PhotosStep({ formData, updateFormData }: PhotosStepProps) {
-  const [isUploading, setIsUploading] = useState(false)
+  const [isUploading, setIsUploading] = useState(false);
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files
-    if (!files) return
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const files = event.target.files;
+    if (!files) return;
 
-    setIsUploading(true)
+    setIsUploading(true);
     // In a real app, you'd upload to a service like UploadThing or AWS S3
     // For now, we'll simulate with placeholder URLs
     const newPhotos = Array.from(files).map(
       (file, index) =>
-        `/placeholder.svg?height=300&width=300&query=profile photo ${formData.photos.length + index + 1}`,
-    )
+        `/placeholder.svg?height=300&width=300&query=profile photo ${formData.photos.length + index + 1}`
+    );
 
-    updateFormData({ photos: [...formData.photos, ...newPhotos] })
-    setIsUploading(false)
-  }
+    updateFormData({ photos: [...formData.photos, ...newPhotos] });
+    setIsUploading(false);
+  };
 
   const removePhoto = (index: number) => {
-    const updated = formData.photos.filter((_, i) => i !== index)
-    updateFormData({ photos: updated })
-  }
+    const updated = formData.photos.filter((_, i) => i !== index);
+    updateFormData({ photos: updated });
+  };
 
   return (
     <div className="space-y-6">
       <div>
         <Label className="text-base">Add Your Photos</Label>
         <p className="text-sm text-muted-foreground mt-1">
-          Add at least 2 photos. Your first photo will be your main profile picture.
+          Add at least 2 photos. Your first photo will be your main profile
+          picture.
         </p>
       </div>
 
@@ -90,7 +93,9 @@ export function PhotosStep({ formData, updateFormData }: PhotosStepProps) {
         )}
       </div>
 
-      {isUploading && <p className="text-sm text-muted-foreground">Uploading photos...</p>}
+      {isUploading && (
+        <p className="text-sm text-muted-foreground">Uploading photos...</p>
+      )}
     </div>
-  )
+  );
 }
