@@ -25,3 +25,30 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+# Dependency directories
+node_modules/
+vendor/
+
+# Build outputs
+dist/
+build/
+*.o
+*.class
+
+# Environment files
+.env
+.env.local
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+server/
+backup_*/
+*.backup
+payment_routes.txt

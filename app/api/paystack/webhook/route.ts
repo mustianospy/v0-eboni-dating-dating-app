@@ -1,33 +1,48 @@
 import { NextRequest, NextResponse } from "next/server";
-import crypto from "crypto";
-
-export const runtime = "nodejs";
-
-function verifyPaystackSignature(secret: string, payload: string, signatureHeader: string | null) {
-  if (!signatureHeader) return false;
-  const hash = crypto.createHmac("sha512", secret).update(payload).digest("hex");
-  return hash === signatureHeader;
-}
+import { verifyPaystackWebhook } from "@/lib/paystack";
 
 export async function POST(req: NextRequest) {
-  const secretKey = process.env.PAYSTACK_SECRET_KEY;
+  try {
+    const body = await req.text();
+    const signature = req.headers.get("x-paystack-signature");
 
-  if (!secretKey) return NextResponse.json({ error: "Missing PAYSTACK_SECRET_KEY" }, { status: 500 });
+    if (!signature) {
+      return NextResponse.json({ error: "No signature" }, { status: 400 });
+    }
 
-  const bodyText = await req.text();
-  const signature = req.headers.get("x-paystack-signature");
-  const isValid = verifyPaystackSignature(secretKey, bodyText, signature);
-  if (!isValid) return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
+    // Verify webhook signature
+    const isValid = verifyPaystackWebhook(body, signature);
+    if (!isValid) {
+      return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+    }
 
-  let event: Record<string, any>;
-  try { event = JSON.parse(bodyText); } 
-  catch { return NextResponse.json({ error: "Invalid JSON" }, { status: 400 }); }
+    const event = JSON.parse(body);
 
-  switch (event.event) {
-    case "charge.success": console.log("💰 Payment success:", event.data.reference); break;
-    case "charge.failed": console.log("❌ Payment failed:", event.data.reference); break;
-    default: console.log("ℹ️ Unhandled event:", event.event); break;
+    // Handle different Paystack events
+    switch (event.event) {
+      case "charge.success":
+        // Handle successful payment
+        console.log("Payment successful:", event.data);
+        // TODO: Update user subscription/payment status in database
+        break;
+      
+      case "subscription.create":
+        // Handle subscription creation
+        console.log("Subscription created:", event.data);
+        break;
+      
+      case "subscription.disable":
+        // Handle subscription cancellation
+        console.log("Subscription cancelled:", event.data);
+        break;
+      
+      default:
+        console.log("Unhandled event:", event.event);
+    }
+
+    return NextResponse.json({ received: true });
+  } catch (error) {
+    console.error("Paystack webhook error:", error);
+    return NextResponse.json({ error: "Webhook error" }, { status: 500 });
   }
-
-  return new NextResponse("OK", { status: 200 });
 }
