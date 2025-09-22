@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic"
 import type { Metadata } from "next"
 import { Montserrat, Open_Sans } from "next/font/google"
 import { SkipLink } from "@/components/ui/skip-link"
-import { ThemeProvider } from "@/components/theme/theme-provider"
+import { Providers } from "@/components/providers"
 import { Toaster } from "sonner"
 import "./globals.css"
 
@@ -69,10 +69,10 @@ export default function RootLayout({
       </head>
       <body className="font-sans antialiased">
         <SkipLink />
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+        <Providers>
           {children}
           <Toaster />
-        </ThemeProvider>
+        </Providers>
 
         <script
           dangerouslySetInnerHTML={{
