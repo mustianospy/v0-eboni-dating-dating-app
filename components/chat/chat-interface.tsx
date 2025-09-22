@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -11,6 +10,9 @@ import { ArrowLeft, Send, Phone, Video, MoreVertical, ImageIcon, Smile, Gift } f
 import Link from "next/link"
 import { MessageBubble } from "./message-bubble"
 import { VideoCallModal } from "./video-call-modal"
+import { usePermissions } from "@/hooks/use-permissions"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Lock } from "lucide-react"
 
 interface User {
   id: string
@@ -20,7 +22,8 @@ interface User {
     url: string
     isPrimary: boolean
   }>
-  subscriptionTier?: string; // Assuming subscriptionTier is added to the User interface
+  subscriptionTier?: string // Assuming subscriptionTier is added to the User interface
+  hasEverPaid?: boolean
 }
 
 interface Message {
@@ -59,8 +62,18 @@ export function ChatInterface({ chat, currentUser, otherParticipant }: ChatInter
     scrollToBottom()
   }, [messages])
 
+  const permissions = usePermissions({
+    tier: (currentUser.subscriptionTier as any) || "STANDARD",
+    hasEverPaid: currentUser.hasEverPaid || false,
+  })
+
   const sendMessage = async () => {
     if (!newMessage.trim()) return
+
+    if (!permissions?.canSendMessages) {
+      alert("You need to upgrade your account to send messages. Please visit the subscription page.")
+      return
+    }
 
     const tempMessage = {
       id: `temp-${Date.now()}`,
@@ -100,6 +113,22 @@ export function ChatInterface({ chat, currentUser, otherParticipant }: ChatInter
     }
   }
 
+  const handleVideoCall = () => {
+    if (!permissions?.canMakeVideoCalls) {
+      alert("You need to upgrade your account to make video calls. Please visit the subscription page.")
+      return
+    }
+    setShowVideoCall(true)
+  }
+
+  const handleVoiceCall = () => {
+    if (!permissions?.canMakeVoiceCalls) {
+      alert("You need to upgrade your account to make voice calls. Please visit the subscription page.")
+      return
+    }
+    // Handle voice call logic
+  }
+
   const chatTitle = chat.type === "PRIVATE" ? otherParticipant?.name : chat.name
   const chatAvatar = chat.type === "PRIVATE" ? otherParticipant?.photos[0]?.url : null
 
@@ -127,20 +156,10 @@ export function ChatInterface({ chat, currentUser, otherParticipant }: ChatInter
           </div>
 
           <div className="flex items-center space-x-2">
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" onClick={handleVoiceCall} disabled={!permissions?.canMakeVoiceCalls}>
               <Phone className="h-4 w-4" />
             </Button>
-            <Button 
-              size="sm" 
-              variant="ghost"
-              onClick={() => {
-                if (currentUser.subscriptionTier === "FREE") {
-                  window.location.href = '/subscription'
-                } else {
-                  setShowVideoCall(true)
-                }
-              }}
-            >
+            <Button size="sm" variant="ghost" onClick={handleVideoCall} disabled={!permissions?.canMakeVideoCalls}>
               <Video className="h-4 w-4" />
             </Button>
             <Button variant="ghost" size="sm">
@@ -165,29 +184,43 @@ export function ChatInterface({ chat, currentUser, otherParticipant }: ChatInter
         </div>
       </ScrollArea>
 
+      {/* Permission Alert */}
+      {!permissions?.canSendMessages && (
+        <Alert className="m-4 border-amber-200 bg-amber-50">
+          <Lock className="h-4 w-4" />
+          <AlertDescription>
+            You need to make a payment to unlock messaging features.
+            <Link href="/subscription" className="ml-1 underline font-medium">
+              Upgrade your account
+            </Link>
+          </AlertDescription>
+        </Alert>
+      )}
+
       {/* Message Input */}
       <div className="border-t bg-card/50 backdrop-blur-sm p-4">
         <div className="flex items-center space-x-2">
-          <Button variant="ghost" size="sm">
+          <Button variant="ghost" size="sm" disabled={!permissions?.canSendMessages}>
             <ImageIcon className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="sm">
+          <Button variant="ghost" size="sm" disabled={!permissions?.canSendGifts}>
             <Gift className="h-4 w-4" />
           </Button>
 
           <div className="flex-1 relative">
             <Input
-              placeholder="Type a message..."
+              placeholder={permissions?.canSendMessages ? "Type a message..." : "Upgrade to send messages"}
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               className="pr-12"
+              disabled={!permissions?.canSendMessages}
             />
             <Button
               size="sm"
               className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
               onClick={sendMessage}
-              disabled={!newMessage.trim()}
+              disabled={!newMessage.trim() || !permissions?.canSendMessages}
             >
               <Send className="h-4 w-4" />
             </Button>
