@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { DiscoveryContent } from "@/components/discovery/discovery-content";
+import DiscoveryContent from "@/components/discovery/discovery-content";
 
 export default async function DiscoverPage() {
   const session = await getServerSession(authOptions);

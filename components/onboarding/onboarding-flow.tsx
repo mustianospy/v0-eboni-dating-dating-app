@@ -6,11 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Heart } from "lucide-react";
-import { BasicInfoStep } from "./steps/basic-info-step";
-import { GenderOrientationStep } from "./steps/gender-orientation-step";
-import { InterestsStep } from "./steps/interests-step";
-import { PhotosStep } from "./steps/photos-step";
-import { BioStep } from "./steps/bio-step";
+import BasicInfoStep from "./steps/basic-info-step";
+import GenderOrientationStep from "./steps/gender-orientation-step";
+import InterestsStep from "./steps/interests-step";
+import PhotosStep from "./steps/photos-step";
+import BioStep from "./steps/bio-step";
 
 const STEPS = [
   { id: "basic", title: "Basic Info", component: BasicInfoStep },
