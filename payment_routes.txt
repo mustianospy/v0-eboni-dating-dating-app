@@ -1,4 +1,0 @@
-app/api/stripe/create-checkout-session/route.ts
-app/api/user/payment-cards/[cardId]/default/route.ts
-app/api/user/payment-cards/[cardId]/route.ts
-app/api/checkout/route.ts

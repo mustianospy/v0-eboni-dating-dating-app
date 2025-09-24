@@ -1,20 +1,16 @@
-export const dynamic = "force-dynamic"
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
-import { NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+interface Params {
+  params: { cardId: string };
+}
 
-const STRIPE_KEY = process.env.STRIPE_SECRET_KEY
+export async function GET(req: NextRequest, { params }: Params) {
+  // Example: Fetch a card if needed
+  // const card = await prisma.paymentCard.findUnique({ where: { id: params.cardId } });
 
-export async function POST(
-  req: Request,
-  { params }: { params: { cardId: string } }
-) {
-  if (!STRIPE_KEY) {
-    return NextResponse.json(
-      { error: "Card payments are not enabled. Please use wallet/coins." },
-      { status: 200 }
-    )
-  }
-
-  return NextResponse.json({ message: `Set card ${params.cardId} as default` })
+  return NextResponse.json({
+    message: "Default card endpoint hit",
+    cardId: params.cardId,
+  });
 }

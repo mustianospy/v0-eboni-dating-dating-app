@@ -1,49 +1,57 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Camera, CheckCircle, Clock, AlertCircle } from "lucide-react"
+import { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Camera, CheckCircle, Clock, AlertCircle } from "lucide-react";
 
 export function VerificationTab() {
-  const [verificationStatus, setVerificationStatus] = useState<"none" | "pending" | "verified" | "rejected">("none")
+  const [verificationStatus, setVerificationStatus] = useState<
+    "none" | "pending" | "verified" | "rejected"
+  >("none");
 
   const handleStartVerification = () => {
-    setVerificationStatus("pending")
+    setVerificationStatus("pending");
     // Simulate verification process
     setTimeout(() => {
-      setVerificationStatus("verified")
-    }, 3000)
-  }
+      setVerificationStatus("verified");
+    }, 3000);
+  };
 
   const getStatusBadge = () => {
     switch (verificationStatus) {
       case "none":
-        return null
+        return null;
       case "pending":
         return (
           <Badge className="bg-yellow-100 text-yellow-800">
             <Clock className="h-3 w-3 mr-1" />
             Pending Review
           </Badge>
-        )
+        );
       case "verified":
         return (
           <Badge className="bg-green-100 text-green-800">
             <CheckCircle className="h-3 w-3 mr-1" />
             Verified
           </Badge>
-        )
+        );
       case "rejected":
         return (
           <Badge className="bg-red-100 text-red-800">
             <AlertCircle className="h-3 w-3 mr-1" />
             Rejected
           </Badge>
-        )
+        );
     }
-  }
+  };
 
   return (
     <Card>
@@ -53,7 +61,9 @@ export function VerificationTab() {
           Profile Verification
           {getStatusBadge()}
         </CardTitle>
-        <CardDescription>Verify your identity to increase trust and get more matches</CardDescription>
+        <CardDescription>
+          Verify your identity to increase trust and get more matches
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {verificationStatus === "none" && (
@@ -91,7 +101,8 @@ export function VerificationTab() {
             <Clock className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
             <h3 className="font-medium mb-2">Verification in Progress</h3>
             <p className="text-sm text-muted-foreground">
-              We're reviewing your verification photos. This usually takes up to 24 hours.
+              We're reviewing your verification photos. This usually takes up to
+              24 hours.
             </p>
           </div>
         )}
@@ -101,7 +112,8 @@ export function VerificationTab() {
             <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
             <h3 className="font-medium mb-2">Profile Verified!</h3>
             <p className="text-sm text-muted-foreground">
-              Your profile is now verified. You'll see increased visibility and trust from other users.
+              Your profile is now verified. You'll see increased visibility and
+              trust from other users.
             </p>
           </div>
         )}
@@ -111,14 +123,18 @@ export function VerificationTab() {
             <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
             <h3 className="font-medium mb-2">Verification Failed</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              We couldn't verify your photos. Please try again with clearer images.
+              We couldn't verify your photos. Please try again with clearer
+              images.
             </p>
-            <Button onClick={() => setVerificationStatus("none")} variant="outline">
+            <Button
+              onClick={() => setVerificationStatus("none")}
+              variant="outline"
+            >
               Try Again
             </Button>
           </div>
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

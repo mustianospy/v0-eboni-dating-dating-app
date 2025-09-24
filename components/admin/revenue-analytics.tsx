@@ -1,6 +1,12 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   BarChart,
   Bar,
@@ -14,8 +20,8 @@ import {
   PieChart,
   Pie,
   Cell,
-} from "recharts"
-import { DollarSign, TrendingUp, Users, CreditCard } from "lucide-react"
+} from "recharts";
+import { DollarSign, TrendingUp, Users, CreditCard } from "lucide-react";
 
 const monthlyRevenue = [
   { month: "Jan", revenue: 8400, subscriptions: 280 },
@@ -24,14 +30,14 @@ const monthlyRevenue = [
   { month: "Apr", revenue: 11300, subscriptions: 380 },
   { month: "May", revenue: 12100, subscriptions: 410 },
   { month: "Jun", revenue: 12800, subscriptions: 430 },
-]
+];
 
 const subscriptionData = [
   { name: "Free", value: 8500, color: "#94a3b8" },
   { name: "Plus", value: 2100, color: "#3b82f6" },
   { name: "Pro", value: 1200, color: "#8b5cf6" },
   { name: "Ultra", value: 800, color: "#ec4899" },
-]
+];
 
 export function RevenueAnalytics() {
   return (
@@ -53,7 +59,9 @@ export function RevenueAnalytics() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Subscriptions</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Active Subscriptions
+            </CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -66,7 +74,9 @@ export function RevenueAnalytics() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg Revenue Per User</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Avg Revenue Per User
+            </CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -79,7 +89,9 @@ export function RevenueAnalytics() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Conversion Rate</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Conversion Rate
+            </CardTitle>
             <CreditCard className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -96,7 +108,9 @@ export function RevenueAnalytics() {
         <Card>
           <CardHeader>
             <CardTitle>Monthly Revenue</CardTitle>
-            <CardDescription>Revenue and subscription growth over time</CardDescription>
+            <CardDescription>
+              Revenue and subscription growth over time
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -105,7 +119,13 @@ export function RevenueAnalytics() {
                 <XAxis dataKey="month" />
                 <YAxis />
                 <Tooltip />
-                <Line type="monotone" dataKey="revenue" stroke="#8b5cf6" strokeWidth={2} name="Revenue ($)" />
+                <Line
+                  type="monotone"
+                  dataKey="revenue"
+                  stroke="#8b5cf6"
+                  strokeWidth={2}
+                  name="Revenue ($)"
+                />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
@@ -115,7 +135,9 @@ export function RevenueAnalytics() {
         <Card>
           <CardHeader>
             <CardTitle>Subscription Distribution</CardTitle>
-            <CardDescription>Breakdown of users by subscription tier</CardDescription>
+            <CardDescription>
+              Breakdown of users by subscription tier
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -125,7 +147,9 @@ export function RevenueAnalytics() {
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent }) =>
+                    `${name} ${(percent * 100).toFixed(0)}%`
+                  }
                   outerRadius={80}
                   fill="#8884d8"
                   dataKey="value"
@@ -145,7 +169,9 @@ export function RevenueAnalytics() {
       <Card>
         <CardHeader>
           <CardTitle>Subscription Growth</CardTitle>
-          <CardDescription>New subscriptions acquired each month</CardDescription>
+          <CardDescription>
+            New subscriptions acquired each month
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={300}>
@@ -154,11 +180,15 @@ export function RevenueAnalytics() {
               <XAxis dataKey="month" />
               <YAxis />
               <Tooltip />
-              <Bar dataKey="subscriptions" fill="#3b82f6" name="New Subscriptions" />
+              <Bar
+                dataKey="subscriptions"
+                fill="#3b82f6"
+                name="New Subscriptions"
+              />
             </BarChart>
           </ResponsiveContainer>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

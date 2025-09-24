@@ -1,14 +1,15 @@
-export const dynamic = "force-dynamic"
-
-import { getServerSession } from "next-auth"
 import { redirect } from "next/navigation"
-import { authOptions } from "@/lib/auth"
+import { createClient } from "@/lib/supabase/server"
 import { LandingPage } from "@/components/landing-page"
 
 export default async function HomePage() {
-  const session = await getServerSession(authOptions)
+  const supabase = await createClient()
 
-  if (session) {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (user) {
     redirect("/dashboard")
   }
 

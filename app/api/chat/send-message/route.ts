@@ -1,26 +1,26 @@
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
-import { type NextRequest, NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
-import { prisma } from "@/lib/prisma"
+import { type NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession(authOptions);
 
     if (!session?.user?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { chatId, content, type = "TEXT" } = await request.json()
+    const { chatId, content, type = "TEXT" } = await request.json();
 
     const currentUser = await prisma.user.findUnique({
       where: { email: session.user.email },
-    })
+    });
 
     if (!currentUser) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 })
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     // Verify user is a participant in the chat
@@ -31,10 +31,13 @@ export async function POST(request: NextRequest) {
           userId: currentUser.id,
         },
       },
-    })
+    });
 
     if (!chatParticipant) {
-      return NextResponse.json({ error: "Not authorized to send messages in this chat" }, { status: 403 })
+      return NextResponse.json(
+        { error: "Not authorized to send messages in this chat" },
+        { status: 403 }
+      );
     }
 
     // Get other participants for the receiverId
@@ -43,9 +46,9 @@ export async function POST(request: NextRequest) {
         chatId,
         userId: { not: currentUser.id },
       },
-    })
+    });
 
-    const receiverId = otherParticipants[0]?.userId || null
+    const receiverId = otherParticipants[0]?.userId || null;
 
     // Create message
     const message = await prisma.message.create({
@@ -65,17 +68,20 @@ export async function POST(request: NextRequest) {
           },
         },
       },
-    })
+    });
 
     // Update chat's updatedAt
     await prisma.chat.update({
       where: { id: chatId },
       data: { updatedAt: new Date() },
-    })
+    });
 
-    return NextResponse.json(message)
+    return NextResponse.json(message);
   } catch (error) {
-    console.error("Send message error:", error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    console.error("Send message error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

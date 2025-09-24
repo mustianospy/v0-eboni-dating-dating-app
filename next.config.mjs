@@ -8,18 +8,6 @@ const nextConfig = {
   },
   images: {
     unoptimized: true,
-    domains: ['placeholder.svg', 'blob.v0.app'],
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'blob.v0.app',
-        port: '',
-        pathname: '/**',
-      },
-    ],
-  },
-  experimental: {
-    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
   },
 }
 

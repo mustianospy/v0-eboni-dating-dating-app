@@ -1,15 +1,21 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Heart } from "lucide-react"
-import Link from "next/link"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Heart } from "lucide-react";
+import Link from "next/link";
 
 export function SignUpForm() {
   const [formData, setFormData] = useState({
@@ -17,28 +23,28 @@ export function SignUpForm() {
     email: "",
     password: "",
     confirmPassword: "",
-  })
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
-  const [success, setSuccess] = useState("")
-  const router = useRouter()
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError("")
-    setSuccess("")
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+    setSuccess("");
 
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords don't match")
-      setIsLoading(false)
-      return
+      setError("Passwords don't match");
+      setIsLoading(false);
+      return;
     }
 
     if (formData.password.length < 6) {
-      setError("Password must be at least 6 characters long")
-      setIsLoading(false)
-      return
+      setError("Password must be at least 6 characters long");
+      setIsLoading(false);
+      return;
     }
 
     try {
@@ -52,32 +58,34 @@ export function SignUpForm() {
           email: formData.email,
           password: formData.password,
         }),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (response.ok) {
-        setSuccess("Account created successfully! Please check your email to verify your account.")
+        setSuccess(
+          "Account created successfully! Please check your email to verify your account."
+        );
         setTimeout(() => {
-          router.push("/auth/signin?message=please-verify-email")
-        }, 2000)
+          router.push("/auth/signin?message=please-verify-email");
+        }, 2000);
       } else {
-        setError(data.error || "Signup failed. Please try again.")
+        setError(data.error || "Signup failed. Please try again.");
       }
     } catch (error) {
-      console.error("Signup error:", error)
-      setError("An unexpected error occurred. Please try again.")
+      console.error("Signup error:", error);
+      setError("An unexpected error occurred. Please try again.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
-    })
-  }
+    });
+  };
 
   return (
     <Card className="w-full max-w-md">
@@ -87,7 +95,9 @@ export function SignUpForm() {
           <span className="text-2xl font-serif font-bold">EboniDating</span>
         </div>
         <CardTitle className="text-2xl">Join Our Community</CardTitle>
-        <CardDescription>Create your account and start connecting with amazing people</CardDescription>
+        <CardDescription>
+          Create your account and start connecting with amazing people
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -96,7 +106,7 @@ export function SignUpForm() {
               {error}
             </div>
           )}
-          
+
           {success && (
             <div className="p-3 text-sm text-green-600 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-md">
               {success}
@@ -162,5 +172,5 @@ export function SignUpForm() {
         </p>
       </CardContent>
     </Card>
-  )
+  );
 }

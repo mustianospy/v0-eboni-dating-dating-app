@@ -1,17 +1,23 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Flag, Clock, CheckCircle, XCircle } from "lucide-react"
+import { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Flag, Clock, CheckCircle, XCircle } from "lucide-react";
 
 interface Report {
-  id: string
-  reportedUser: string
-  reason: string
-  status: "pending" | "resolved" | "dismissed"
-  createdAt: string
-  resolvedAt?: string
+  id: string;
+  reportedUser: string;
+  reason: string;
+  status: "pending" | "resolved" | "dismissed";
+  createdAt: string;
+  resolvedAt?: string;
 }
 
 export function ReportHistoryTab() {
@@ -31,29 +37,29 @@ export function ReportHistoryTab() {
       status: "pending",
       createdAt: "2024-01-25",
     },
-  ])
+  ]);
 
   const getStatusIcon = (status: Report["status"]) => {
     switch (status) {
       case "pending":
-        return <Clock className="h-4 w-4" />
+        return <Clock className="h-4 w-4" />;
       case "resolved":
-        return <CheckCircle className="h-4 w-4" />
+        return <CheckCircle className="h-4 w-4" />;
       case "dismissed":
-        return <XCircle className="h-4 w-4" />
+        return <XCircle className="h-4 w-4" />;
     }
-  }
+  };
 
   const getStatusColor = (status: Report["status"]) => {
     switch (status) {
       case "pending":
-        return "bg-yellow-100 text-yellow-800"
+        return "bg-yellow-100 text-yellow-800";
       case "resolved":
-        return "bg-green-100 text-green-800"
+        return "bg-green-100 text-green-800";
       case "dismissed":
-        return "bg-gray-100 text-gray-800"
+        return "bg-gray-100 text-gray-800";
     }
-  }
+  };
 
   return (
     <Card>
@@ -62,14 +68,18 @@ export function ReportHistoryTab() {
           <Flag className="h-5 w-5 text-destructive" />
           Report History
         </CardTitle>
-        <CardDescription>Track the status of reports you've submitted</CardDescription>
+        <CardDescription>
+          Track the status of reports you've submitted
+        </CardDescription>
       </CardHeader>
       <CardContent>
         {reports.length === 0 ? (
           <div className="text-center py-8">
             <Flag className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="font-medium mb-2">No reports submitted</h3>
-            <p className="text-sm text-muted-foreground">Reports you submit will appear here</p>
+            <p className="text-sm text-muted-foreground">
+              Reports you submit will appear here
+            </p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -77,8 +87,12 @@ export function ReportHistoryTab() {
               <div key={report.id} className="p-4 border rounded-lg">
                 <div className="flex items-start justify-between mb-3">
                   <div>
-                    <h4 className="font-medium">Report against {report.reportedUser}</h4>
-                    <p className="text-sm text-muted-foreground">{report.reason}</p>
+                    <h4 className="font-medium">
+                      Report against {report.reportedUser}
+                    </h4>
+                    <p className="text-sm text-muted-foreground">
+                      {report.reason}
+                    </p>
                   </div>
                   <Badge className={getStatusColor(report.status)}>
                     <div className="flex items-center gap-1">
@@ -90,7 +104,10 @@ export function ReportHistoryTab() {
                 <div className="text-xs text-muted-foreground">
                   Submitted: {new Date(report.createdAt).toLocaleDateString()}
                   {report.resolvedAt && (
-                    <span className="ml-4">Resolved: {new Date(report.resolvedAt).toLocaleDateString()}</span>
+                    <span className="ml-4">
+                      Resolved:{" "}
+                      {new Date(report.resolvedAt).toLocaleDateString()}
+                    </span>
                   )}
                 </div>
               </div>
@@ -99,5 +116,5 @@ export function ReportHistoryTab() {
         )}
       </CardContent>
     </Card>
-  )
+  );
 }
